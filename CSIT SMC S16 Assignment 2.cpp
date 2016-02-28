@@ -21,7 +21,10 @@ class city {
 	public: void addConnection (connection);
 	public: std::string name_ () const;
 };
-void loadVerticesEdgesAndWeights (std::vector<city>& cities);
+void loadVerticesEdgesAndWeights (
+	std::vector<city>&,
+	std::vector<city*>&
+);
 void parseFile (
 	std::string&,
 	std::vector<std::string>&,
@@ -35,20 +38,26 @@ void fill (
 );
 void addConnections (
 	std::vector<city>&,
+	std::vector<city*>&,
 	const std::vector<std::string>&,
 	const std::vector<int>&,
 	const std::vector<int>&
 );
 void displayMenu (char&);
 void getDepartureCityIndex (const std::vector<city>&, int&);
+void getDestinationCityIndex (const std::vector<city*>&, const int&, int&);
 void main () {
 	std::vector<city> departureCities;
+	std::vector<city*> allCities;
 	char userChoice;
 	int departureCityIndex;
-	loadVerticesEdgesAndWeights (departureCities);
+	int destinationCityIndex;
+	loadVerticesEdgesAndWeights (departureCities, allCities);
 	displayMenu (userChoice);
-	if (userChoice == '1')
+	if (userChoice == '1') {
 		getDepartureCityIndex (departureCities, departureCityIndex);
+		getDestinationCityIndex (allCities, departureCityIndex, destinationCityIndex);
+	}
 }
 connection::connection (city* destination_, const int& distance_) {
 	destination = destination_;
@@ -66,8 +75,11 @@ std::string city::name_ () const {
 //Loads, as vertices, cities,
 //loads, as edges, connections, and
 //loads, as weights, distances in miles between two connected cities,
-//and saves all that information into my cities vector.
-void loadVerticesEdgesAndWeights (std::vector<city>& departureCities) {
+//and saves all that information into my cities vectors.
+void loadVerticesEdgesAndWeights (
+	std::vector<city>& departureCities,
+	std::vector<city*>& allCities
+) {
 	std::string sFilePlaceHolder =
 		"Los Angeles,San Diego,125,Phoenix,391,Las Vegas,281,San Francisco,378\n"
 		"San Diego,Tucson,418,Phoenix,361,Los Angeles,125\n"
@@ -89,6 +101,7 @@ void loadVerticesEdgesAndWeights (std::vector<city>& departureCities) {
 	fill (departureCities, departureCitiesNames);
 	addConnections (
 		departureCities,
+		allCities,
 		departureCitiesConnectionNames,
 		departureCitiesConnectionDistances,
 		departureCitiesConnectionAmounts
@@ -174,6 +187,7 @@ void fill (
 }
 void addConnections (
 	std::vector<city>& departureCities,
+	std::vector<city*>& allCities,
 	const std::vector<std::string>& departureCitiesConnectionNames,
 	const std::vector<int>& departureCitiesConnectionDistances,
 	const std::vector<int>& departureCitiesConnectionAmounts
@@ -230,6 +244,13 @@ void addConnections (
 			nConnectionCity++;
 		}
 	}
+	for (nDepartureCity = 0; nDepartureCity < nDepartureCities; nDepartureCity++) {
+		allCities.push_back (&departureCities[nDepartureCity]);
+	}
+	nNonDepartureCities = nonDepartureCities.size ();
+	for (nNonDepartureCity = 0; nNonDepartureCity < nNonDepartureCities; nNonDepartureCity++) {
+		allCities.push_back (nonDepartureCities[nNonDepartureCity]);
+	}
 }
 void displayMenu (char& userChoice) {
 	std::cout << "1. Choose departure city\n" <<
@@ -242,8 +263,32 @@ void getDepartureCityIndex (const std::vector<city>& departureCities, int& depar
 	const int nDepartureCities = departureCities.size ();
 	for (int cityIndex = 0; cityIndex < nDepartureCities; cityIndex++)
 		std::cout << cityIndex + 1 << ". " << departureCities[cityIndex].name_ () << "\n";
+	std::cout << "Choose city: ";
 	std::cin >> departureCityIndex;
 	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
 	std::cout << "\n";
 	departureCityIndex--;
+}
+void getDestinationCityIndex (const std::vector<city*>& allCities, const int& departureCityIndex, int& destinationCityIndex) {
+	const int nCities = allCities.size ();
+	int nChoiceForCity;
+	for (int cityIndex = 0; cityIndex < nCities; cityIndex++) {
+		if (cityIndex < departureCityIndex) {
+			nChoiceForCity = cityIndex + 1;
+			std::cout << nChoiceForCity << ". " << allCities[cityIndex]->name_ () << "\n";
+		} else if (cityIndex == departureCityIndex) {
+			//don't show this choice;
+		} else { //cityIndex > departureCityIndex
+			nChoiceForCity = cityIndex;
+			std::cout << nChoiceForCity << ". " << allCities[cityIndex]->name_ () << "\n";
+		}
+	}
+	std::cout << "Choose city: ";
+	std::cin >> nChoiceForCity;
+	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
+	std::cout << "\n";
+	if (nChoiceForCity - 1 < departureCityIndex)
+		destinationCityIndex = nChoiceForCity - 1;
+	else //index AFTER the destination
+		destinationCityIndex = nChoiceForCity;
 }
