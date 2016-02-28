@@ -5,12 +5,13 @@
 //Assignment 2
 //This software manages GenghisAir flights using graphs to represent the
 //available flights.
+#include <string>
 #include <vector>
 class city;
 class connection {
 	private: city* destination;
 	private: int distance;
-	public: connection (city*);
+	public: connection (city*, const int&);
 };
 class city {
 	private: std::string name;
@@ -24,6 +25,7 @@ void parseFile (
 	std::string&,
 	std::vector<std::string>&,
 	std::vector<std::string>&,
+	std::vector<int>&,
 	std::vector<int>&
 );
 void fill (
@@ -33,14 +35,16 @@ void fill (
 void addConnections (
 	std::vector<city>&,
 	const std::vector<std::string>&,
+	const std::vector<int>&,
 	const std::vector<int>&
 );
 void main () {
 	std::vector<city> departureCities;
 	loadVerticesEdgesAndWeights (departureCities);
 }
-connection::connection (city* destination_) {
+connection::connection (city* destination_, const int& distance_) {
 	destination = destination_;
+	distance = distance_;
 }
 city::city (std::string cityName) {
 	name = cityName;
@@ -57,57 +61,98 @@ std::string city::name_ () {
 //and saves all that information into my cities vector.
 void loadVerticesEdgesAndWeights (std::vector<city>& departureCities) {
 	std::string sFilePlaceHolder =
-		"Los Angeles,San Diego,Phoenix,Las Vegas,San Francisco\n"
-		"San Diego,Tucson,Phoenix,Los Angeles\n"
-		"Tucson,Phoenix,San Diego\n"
-		"Phoenix,Tucson,Las Vegas,Los Angeles,San Diego\n"
-		"Las Vegas,Phoenix,San Francisco,Los Angeles\n"
-		"San Francisco,Los Angeles,Las Vegas\n";
+		"Los Angeles,San Diego,125,Phoenix,391,Las Vegas,281,San Francisco,378\n"
+		"San Diego,Tucson,418,Phoenix,361,Los Angeles,125\n"
+		"Tucson,Phoenix,119,San Diego,423\n"
+		"Phoenix,Tucson,118,Las Vegas,300,Los Angeles,391,San Diego,362\n"
+		"Las Vegas,Phoenix,301,San Francisco,556,Los Angeles,282\n"
+		"San Francisco,Los Angeles,378,Las Vegas,556\n";
 	std::vector<std::string> departureCitiesNames;
 	std::vector<std::string> departureCitiesConnectionNames;
+	std::vector<int> departureCitiesConnectionDistances;
 	std::vector<int> departureCitiesConnectionAmounts;
 	parseFile (
 		sFilePlaceHolder,
 		departureCitiesNames,
 		departureCitiesConnectionNames,
+		departureCitiesConnectionDistances,
 		departureCitiesConnectionAmounts
 	);
 	fill (departureCities, departureCitiesNames);
-	addConnections (departureCities, departureCitiesConnectionNames, departureCitiesConnectionAmounts);
+	addConnections (
+		departureCities,
+		departureCitiesConnectionNames,
+		departureCitiesConnectionDistances,
+		departureCitiesConnectionAmounts
+	);
 }
 void parseFile (
 	std::string& sFilePlaceHolder,
 	std::vector<std::string>& departureCitiesNames,
 	std::vector<std::string>& departureCitiesConnectionNames,
+	std::vector<int>& departureCitiesConnectionDistances,
 	std::vector<int>& departureCitiesConnectionAmounts
 ) {
-	std::string cityName;
+	std::string sRead;
 	char chRead;
-	bool bEditingCityName = true;
+	const int DEPARTURE_NAME = 0;
+	const int CONNECTION_NAME = 1;
+	const int CONNECTION_DISTANCE = 2;
+	int objectReading = DEPARTURE_NAME;
 	int nConnections = 0;
 	while (sFilePlaceHolder.empty () != true) {
 		chRead = sFilePlaceHolder[0];
 		sFilePlaceHolder.erase (0, 1);
 
-		if (chRead == ',') {
-			if (bEditingCityName) {
-				bEditingCityName = false;
-				departureCitiesNames.push_back (cityName);
-				cityName.clear ();
-			} else {
-				departureCitiesConnectionNames.push_back (cityName);
-				nConnections++;
-				cityName.clear ();
+		switch (chRead) {
+			default:
+			{
+				sRead += chRead;
+				break;
 			}
-		} else if (chRead == '\n') {
-			departureCitiesConnectionNames.push_back (cityName);
-			nConnections++;
-			cityName.clear ();
-			departureCitiesConnectionAmounts.push_back (nConnections);
-			nConnections = 0;
-			bEditingCityName = true;
-		} else
-			cityName += chRead;
+			case ',':
+			{
+				switch (objectReading) {
+					case DEPARTURE_NAME:
+					{
+						departureCitiesNames.push_back (sRead);
+						sRead.clear ();
+						objectReading = CONNECTION_NAME;
+						break;
+					}
+					case CONNECTION_NAME:
+					{
+						departureCitiesConnectionNames.push_back (sRead);
+						sRead.clear ();
+						objectReading = CONNECTION_DISTANCE;
+						break;
+					}
+					case CONNECTION_DISTANCE:
+					{
+						departureCitiesConnectionDistances.push_back (std::stoi (sRead));
+						nConnections++;
+						sRead.clear ();
+						objectReading = CONNECTION_NAME;
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+				break;
+			}
+			case '\n':
+			{
+				departureCitiesConnectionDistances.push_back (std::stoi (sRead));
+				nConnections++;
+				sRead.clear ();
+				departureCitiesConnectionAmounts.push_back (nConnections);
+				nConnections = 0;
+				objectReading = DEPARTURE_NAME;
+				break;
+			}
+		}
 	}
 }
 void fill (
@@ -122,6 +167,7 @@ void fill (
 void addConnections (
 	std::vector<city>& departureCities,
 	const std::vector<std::string>& departureCitiesConnectionNames,
+	const std::vector<int>& departureCitiesConnectionDistances,
 	const std::vector<int>& departureCitiesConnectionAmounts
 ) {
 	int nDepartureCity;
@@ -170,7 +216,9 @@ void addConnections (
 					nonDepartureCities.push_back (destination);
 				}
 			}
-			departureCities[nDepartureCity].addConnection (connection (destination));
+			departureCities[nDepartureCity].addConnection (
+				connection (destination, departureCitiesConnectionDistances[nConnectionCity])
+			);
 			nConnectionCity++;
 		}
 	}
