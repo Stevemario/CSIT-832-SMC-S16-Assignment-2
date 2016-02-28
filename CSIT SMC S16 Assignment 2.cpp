@@ -19,7 +19,7 @@ class city {
 	private: std::vector <connection> connections;
 	public: city (std::string);
 	public: void addConnection (connection);
-	public: std::string name_ ();
+	public: std::string name_ () const;
 };
 void loadVerticesEdgesAndWeights (std::vector<city>& cities);
 void parseFile (
@@ -40,11 +40,15 @@ void addConnections (
 	const std::vector<int>&
 );
 void displayMenu (char&);
+void getDepartureCityIndex (const std::vector<city>&, int&);
 void main () {
 	std::vector<city> departureCities;
 	char userChoice;
+	int departureCityIndex;
 	loadVerticesEdgesAndWeights (departureCities);
 	displayMenu (userChoice);
+	if (userChoice == '1')
+		getDepartureCityIndex (departureCities, departureCityIndex);
 }
 connection::connection (city* destination_, const int& distance_) {
 	destination = destination_;
@@ -56,7 +60,7 @@ city::city (std::string cityName) {
 void city::addConnection (connection connection_) {
 	connections.push_back (connection_);
 }
-std::string city::name_ () {
+std::string city::name_ () const {
 	return name;
 }
 //Loads, as vertices, cities,
@@ -232,4 +236,14 @@ void displayMenu (char& userChoice) {
 		"2. Exit\n";
 	std::cin >> userChoice;
 	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
+	std::cout << "\n";
+}
+void getDepartureCityIndex (const std::vector<city>& departureCities, int& departureCityIndex) {
+	const int nDepartureCities = departureCities.size ();
+	for (int cityIndex = 0; cityIndex < nDepartureCities; cityIndex++)
+		std::cout << cityIndex + 1 << ". " << departureCities[cityIndex].name_ () << "\n";
+	std::cin >> departureCityIndex;
+	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
+	std::cout << "\n";
+	departureCityIndex--;
 }
