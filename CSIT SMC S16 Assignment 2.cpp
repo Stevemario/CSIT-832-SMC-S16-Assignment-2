@@ -5,6 +5,7 @@
 //Assignment 2
 //This software manages GenghisAir flights using graphs to represent the
 //available flights.
+#include <iostream>
 #include <string>
 #include <vector>
 class city;
@@ -38,9 +39,12 @@ void addConnections (
 	const std::vector<int>&,
 	const std::vector<int>&
 );
+void displayMenu (char&);
 void main () {
 	std::vector<city> departureCities;
+	char userChoice;
 	loadVerticesEdgesAndWeights (departureCities);
+	displayMenu (userChoice);
 }
 connection::connection (city* destination_, const int& distance_) {
 	destination = destination_;
@@ -222,4 +226,10 @@ void addConnections (
 			nConnectionCity++;
 		}
 	}
+}
+void displayMenu (char& userChoice) {
+	std::cout << "1. Choose departure city\n" <<
+		"2. Exit\n";
+	std::cin >> userChoice;
+	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
 }
