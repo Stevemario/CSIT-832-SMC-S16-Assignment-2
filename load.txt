@@ -1,0 +1,6 @@
+Los Angeles,San Diego,125,Phoenix,391,Las Vegas,281,San Francisco,378
+San Diego,Tucson,418,Phoenix,361,Los Angeles,125
+Tucson,Phoenix,119,San Diego,423
+Phoenix,Tucson,118,Las Vegas,300,Los Angeles,391,San Diego,362
+Las Vegas,Phoenix,301,San Francisco,556,Los Angeles,282
+San Francisco,Los Angeles,378,Las Vegas,556

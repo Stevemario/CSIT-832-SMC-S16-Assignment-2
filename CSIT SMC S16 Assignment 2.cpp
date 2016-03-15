@@ -3,284 +3,138 @@
 //Spring 2016
 //Steve Mario Correa
 //Assignment 2
-//This software manages GenghisAir flights using graphs to represent the
-//available flights.
+//This software uses a graph to represent the GenghisAir flight cities network.
+#include "graph.h"
 #include <iostream>
-#include <string>
-#include <vector>
-class city;
-class connection {
-	private: city* destination;
-	private: int distance;
-	public: connection (city*, const int&);
-};
-class city {
-	private: std::string name;
-	private: std::vector <connection> connections;
-	public: city (std::string);
-	public: void addConnection (connection);
-	public: std::string name_ () const;
-};
-void loadVerticesEdgesAndWeights (
-	std::vector<city>&,
-	std::vector<city*>&
+#include <fstream>
+void displayMenu (
+	char&
 );
-void parseFile (
-	std::string&,
-	std::vector<std::string>&,
-	std::vector<std::string>&,
-	std::vector<int>&,
-	std::vector<int>&
+void getDepartureCityIndex (
+	const graph&,
+	unsigned int&
 );
-void fill (
-	std::vector<city>&,
-	const std::vector<std::string>&
+void getDestinationCityIndex (
+	const graph&,
+	const unsigned int&,
+	unsigned int&
 );
-void addConnections (
-	std::vector<city>&,
-	std::vector<city*>&,
-	const std::vector<std::string>&,
-	const std::vector<int>&,
-	const std::vector<int>&
+void printNoConnection (
+	const graph&,
+	const unsigned int&,
+	const unsigned int&
 );
-void displayMenu (char&);
-void getDepartureCityIndex (const std::vector<city>&, int&);
-void getDestinationCityIndex (const std::vector<city*>&, const int&, int&);
+void printInstructionsToReturnToMenu ();
+void printNoDirectConnection (
+	const graph&,
+	const unsigned int&,
+	const unsigned int&
+);
+void printThroughConnections (
+	const graph&,
+	const unsigned int&,
+	const unsigned int&,
+	const std::vector<connection>&,
+	const std::vector<unsigned int>&
+);
+void printDirectConnection (
+	const graph&,
+	const unsigned int&,
+	const unsigned int&
+);
+void printNoThroughConnections (
+	const graph&,
+	const unsigned int&,
+	const unsigned int&
+);
 void main () {
-	std::vector<city> departureCities;
-	std::vector<city*> allCities;
+	std::ifstream dataFile ("load.txt");
+	graph citiesGraph;
 	char userChoice;
-	int departureCityIndex;
-	int destinationCityIndex;
-	loadVerticesEdgesAndWeights (departureCities, allCities);
-	displayMenu (userChoice);
-	if (userChoice == '1') {
-		getDepartureCityIndex (departureCities, departureCityIndex);
-		getDestinationCityIndex (allCities, departureCityIndex, destinationCityIndex);
-	}
-}
-connection::connection (city* destination_, const int& distance_) {
-	destination = destination_;
-	distance = distance_;
-}
-city::city (std::string cityName) {
-	name = cityName;
-}
-void city::addConnection (connection connection_) {
-	connections.push_back (connection_);
-}
-std::string city::name_ () const {
-	return name;
-}
-//Loads, as vertices, cities,
-//loads, as edges, connections, and
-//loads, as weights, distances in miles between two connected cities,
-//and saves all that information into my cities vectors.
-void loadVerticesEdgesAndWeights (
-	std::vector<city>& departureCities,
-	std::vector<city*>& allCities
-) {
-	std::string sFilePlaceHolder =
-		"Los Angeles,San Diego,125,Phoenix,391,Las Vegas,281,San Francisco,378\n"
-		"San Diego,Tucson,418,Phoenix,361,Los Angeles,125\n"
-		"Tucson,Phoenix,119,San Diego,423\n"
-		"Phoenix,Tucson,118,Las Vegas,300,Los Angeles,391,San Diego,362\n"
-		"Las Vegas,Phoenix,301,San Francisco,556,Los Angeles,282\n"
-		"San Francisco,Los Angeles,378,Las Vegas,556\n";
-	std::vector<std::string> departureCitiesNames;
-	std::vector<std::string> departureCitiesConnectionNames;
-	std::vector<int> departureCitiesConnectionDistances;
-	std::vector<int> departureCitiesConnectionAmounts;
-	parseFile (
-		sFilePlaceHolder,
-		departureCitiesNames,
-		departureCitiesConnectionNames,
-		departureCitiesConnectionDistances,
-		departureCitiesConnectionAmounts
-	);
-	fill (departureCities, departureCitiesNames);
-	addConnections (
-		departureCities,
-		allCities,
-		departureCitiesConnectionNames,
-		departureCitiesConnectionDistances,
-		departureCitiesConnectionAmounts
-	);
-}
-void parseFile (
-	std::string& sFilePlaceHolder,
-	std::vector<std::string>& departureCitiesNames,
-	std::vector<std::string>& departureCitiesConnectionNames,
-	std::vector<int>& departureCitiesConnectionDistances,
-	std::vector<int>& departureCitiesConnectionAmounts
-) {
-	std::string sRead;
-	char chRead;
-	const int DEPARTURE_NAME = 0;
-	const int CONNECTION_NAME = 1;
-	const int CONNECTION_DISTANCE = 2;
-	int objectReading = DEPARTURE_NAME;
-	int nConnections = 0;
-	while (sFilePlaceHolder.empty () != true) {
-		chRead = sFilePlaceHolder[0];
-		sFilePlaceHolder.erase (0, 1);
-
-		switch (chRead) {
-			default:
-			{
-				sRead += chRead;
-				break;
-			}
-			case ',':
-			{
-				switch (objectReading) {
-					case DEPARTURE_NAME:
-					{
-						departureCitiesNames.push_back (sRead);
-						sRead.clear ();
-						objectReading = CONNECTION_NAME;
-						break;
-					}
-					case CONNECTION_NAME:
-					{
-						departureCitiesConnectionNames.push_back (sRead);
-						sRead.clear ();
-						objectReading = CONNECTION_DISTANCE;
-						break;
-					}
-					case CONNECTION_DISTANCE:
-					{
-						departureCitiesConnectionDistances.push_back (std::stoi (sRead));
-						nConnections++;
-						sRead.clear ();
-						objectReading = CONNECTION_NAME;
-						break;
-					}
-					default:
-					{
-						break;
-					}
-				}
-				break;
-			}
-			case '\n':
-			{
-				departureCitiesConnectionDistances.push_back (std::stoi (sRead));
-				nConnections++;
-				sRead.clear ();
-				departureCitiesConnectionAmounts.push_back (nConnections);
-				nConnections = 0;
-				objectReading = DEPARTURE_NAME;
-				break;
+	bool programShouldEnd = false;
+	unsigned int departureCityIndex;
+	unsigned int destinationCityIndex;
+	bool thereIsNoDirectConnection;
+	bool thereIsNoThroughConnection;
+	std::vector<connection> throughConnections;
+	std::vector<unsigned int> weightTotals;
+	citiesGraph.load (dataFile);
+	dataFile.close ();
+	do {
+		displayMenu (userChoice);
+		if (userChoice == '2')
+			programShouldEnd = true;
+		else if (userChoice == '1') {
+			getDepartureCityIndex (citiesGraph, departureCityIndex);
+			getDestinationCityIndex (citiesGraph, departureCityIndex, destinationCityIndex);
+			thereIsNoDirectConnection = citiesGraph.hasDirectConnectionBetween (departureCityIndex, destinationCityIndex) == false;
+			thereIsNoThroughConnection = citiesGraph.hasThroughConnectionBetween (
+				departureCityIndex,
+				destinationCityIndex,
+				throughConnections,
+				weightTotals
+			) == false;
+			if (thereIsNoDirectConnection && thereIsNoThroughConnection) {
+			//if there is no direct or through connection between the departure and destination cities
+				printNoConnection (citiesGraph, departureCityIndex, destinationCityIndex);
+				printInstructionsToReturnToMenu ();
+			} else if (thereIsNoDirectConnection && thereIsNoThroughConnection == false) {
+				printNoDirectConnection (citiesGraph, departureCityIndex, destinationCityIndex);
+				printThroughConnections (citiesGraph, departureCityIndex, destinationCityIndex, throughConnections, weightTotals);
+				printInstructionsToReturnToMenu ();
+			} else if (thereIsNoDirectConnection == false) {
+				printDirectConnection (citiesGraph, departureCityIndex, destinationCityIndex);
+				if (thereIsNoThroughConnection)
+					printNoThroughConnections (citiesGraph, departureCityIndex, destinationCityIndex);
+				else
+					printThroughConnections (citiesGraph, departureCityIndex, destinationCityIndex, throughConnections, weightTotals);
+				printInstructionsToReturnToMenu ();
 			}
 		}
-	}
+	} while (programShouldEnd == false);
 }
-void fill (
-	std::vector<city>& departureCities,
-	const std::vector<std::string>& departureCitiesNames
+void displayMenu (
+	char& userChoice
 ) {
-	int nDepartureCities = departureCitiesNames.size ();
-	for (int nCity = 0; nCity < nDepartureCities; nCity++) {
-		departureCities.push_back (city (departureCitiesNames[nCity]));
-	}
-}
-void addConnections (
-	std::vector<city>& departureCities,
-	std::vector<city*>& allCities,
-	const std::vector<std::string>& departureCitiesConnectionNames,
-	const std::vector<int>& departureCitiesConnectionDistances,
-	const std::vector<int>& departureCitiesConnectionAmounts
-) {
-	int nDepartureCity;
-	int nDepartureCities = departureCities.size ();
-	int nConnections;
-	int nDepartureCityConnection;
-	int nConnectionCity = 0;
-	std::string connectionCityName;
-	int nDepartureCityForLoop2;
-	bool bDestinationFound;
-	std::string departureCityName;
-	city* destination;
-	int nNonDepartureCities;
-	std::vector<city*> nonDepartureCities;
-	std::string nonDepartureCityName;
-	int nNonDepartureCity;
-	for (nDepartureCity = 0; nDepartureCity < nDepartureCities; nDepartureCity++) {
-		nConnections = departureCitiesConnectionAmounts[nDepartureCity];
-		for (nDepartureCityConnection = 0; nDepartureCityConnection < nConnections; nDepartureCityConnection++) {
-			connectionCityName = departureCitiesConnectionNames[nConnectionCity];
-			bDestinationFound = false;
-			for (
-				nDepartureCityForLoop2 = 0;
-				nDepartureCityForLoop2 < nDepartureCities && bDestinationFound == false;
-				nDepartureCityForLoop2++
-			) {
-				departureCityName = departureCities[nDepartureCityForLoop2].name_ ();
-				bDestinationFound = connectionCityName.compare (departureCityName) == 0;
-				if (bDestinationFound)
-					destination = &departureCities[nDepartureCityForLoop2];
-			}
-			if (bDestinationFound == false) {
-				nNonDepartureCities = nonDepartureCities.size ();
-				for (
-					nNonDepartureCity = 0;
-					nNonDepartureCity < nNonDepartureCities && bDestinationFound == false;
-					nNonDepartureCity++
-				) {
-					nonDepartureCityName = nonDepartureCities[nNonDepartureCity]->name_ ();
-					bDestinationFound = connectionCityName.compare (nonDepartureCityName) == 0;
-					if (bDestinationFound)
-						destination = nonDepartureCities[nNonDepartureCity];
-				}
-				if (bDestinationFound == false) {
-					destination = new city (connectionCityName);
-					nonDepartureCities.push_back (destination);
-				}
-			}
-			departureCities[nDepartureCity].addConnection (
-				connection (destination, departureCitiesConnectionDistances[nConnectionCity])
-			);
-			nConnectionCity++;
-		}
-	}
-	for (nDepartureCity = 0; nDepartureCity < nDepartureCities; nDepartureCity++) {
-		allCities.push_back (&departureCities[nDepartureCity]);
-	}
-	nNonDepartureCities = nonDepartureCities.size ();
-	for (nNonDepartureCity = 0; nNonDepartureCity < nNonDepartureCities; nNonDepartureCity++) {
-		allCities.push_back (nonDepartureCities[nNonDepartureCity]);
-	}
-}
-void displayMenu (char& userChoice) {
 	std::cout << "1. Choose departure city\n" <<
 		"2. Exit\n";
 	std::cin >> userChoice;
 	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
 	std::cout << "\n";
 }
-void getDepartureCityIndex (const std::vector<city>& departureCities, int& departureCityIndex) {
-	const int nDepartureCities = departureCities.size ();
-	for (int cityIndex = 0; cityIndex < nDepartureCities; cityIndex++)
-		std::cout << cityIndex + 1 << ". " << departureCities[cityIndex].name_ () << "\n";
+void getDepartureCityIndex (
+	const graph& citiesGraph,
+	unsigned int& departureCityIndex
+) {
+	const unsigned int nVertices = citiesGraph.nVertices ();
+	for (
+		unsigned int vertice = 0;
+		vertice < nVertices;
+		vertice++
+	)
+		std::cout << vertice + 1 << ". " << citiesGraph.nameOfVertice (vertice) << "\n";
 	std::cout << "Choose city: ";
 	std::cin >> departureCityIndex;
 	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
 	std::cout << "\n";
 	departureCityIndex--;
 }
-void getDestinationCityIndex (const std::vector<city*>& allCities, const int& departureCityIndex, int& destinationCityIndex) {
-	const int nCities = allCities.size ();
-	int nChoiceForCity;
-	for (int cityIndex = 0; cityIndex < nCities; cityIndex++) {
+void getDestinationCityIndex (
+	const graph& citiesGraph,
+	const unsigned int& departureCityIndex,
+	unsigned int& destinationCityIndex
+) {
+	const unsigned int nCities = citiesGraph.nVertices ();
+	unsigned int nChoiceForCity;
+	for (unsigned int cityIndex = 0; cityIndex < nCities; cityIndex++) {
 		if (cityIndex < departureCityIndex) {
 			nChoiceForCity = cityIndex + 1;
-			std::cout << nChoiceForCity << ". " << allCities[cityIndex]->name_ () << "\n";
+			std::cout << nChoiceForCity << ". " << citiesGraph.nameOfVertice (cityIndex) << "\n";
 		} else if (cityIndex == departureCityIndex) {
 			//don't show this choice;
 		} else { //cityIndex > departureCityIndex
 			nChoiceForCity = cityIndex;
-			std::cout << nChoiceForCity << ". " << allCities[cityIndex]->name_ () << "\n";
+			std::cout << nChoiceForCity << ". " << citiesGraph.nameOfVertice (cityIndex) << "\n";
 		}
 	}
 	std::cout << "Choose city: ";
@@ -291,4 +145,84 @@ void getDestinationCityIndex (const std::vector<city*>& allCities, const int& de
 		destinationCityIndex = nChoiceForCity - 1;
 	else //index AFTER the destination
 		destinationCityIndex = nChoiceForCity;
+}
+void printNoConnection (
+	const graph& citiesGraph,
+	const unsigned int& departureCityIndex,
+	const unsigned int& destinationCityIndex
+) {
+	std::cout << "No connection between " << citiesGraph.nameOfVertice (departureCityIndex) <<
+		" and " << citiesGraph.nameOfVertice (destinationCityIndex) << "\n";
+}
+void printInstructionsToReturnToMenu () {
+	char userChoice;
+	std::cout << "Press any key to return to menu.\n";
+	std::cin >> userChoice;
+	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
+	std::cout << "\n";
+}
+void printNoDirectConnection (
+	const graph& citiesGraph,
+	const unsigned int& departureCityIndex,
+	const unsigned int& destinationCityIndex
+) {
+	std::cout << "No direction connection between " << citiesGraph.nameOfVertice (departureCityIndex) <<
+		" and " << citiesGraph.nameOfVertice (destinationCityIndex) << "\n";
+}
+void printThroughConnections (
+	const graph& citiesGraph,
+	const unsigned int& departureCityIndex,
+	const unsigned int& destinationCityIndex,
+	const std::vector<connection>& throughConnections,
+	const std::vector<unsigned int>& weightTotals
+) {
+	unsigned int nConnections;
+	unsigned int connection;
+	unsigned int nDepartures;
+	unsigned int departure;
+	nConnections = throughConnections.size ();
+	for (
+		connection = 0;
+		connection < nConnections;
+		connection++
+	) {
+		nDepartures = throughConnections[connection].size ();
+		std::cout << "Through connection between " << citiesGraph.nameOfVertice (departureCityIndex) << " and " <<
+			citiesGraph.nameOfVertice (destinationCityIndex)  << " via ";
+		for (
+			departure = 1; //0th departure has already been named above
+			departure < nDepartures;
+			departure++
+		) {
+			std::cout << citiesGraph.nameOfVertice (throughConnections[connection][departure]);
+			if (
+				nDepartures > 1 &&
+				//there are multiple layovers, and
+				departure != nDepartures - 1
+				//this isnt the last layover
+			) {
+				std::cout << ", ";
+				//oxford comma too
+				if (departure == nDepartures - 2) //if this is penultimate departure
+					std::cout << "and ";
+			}
+		}
+		std::cout << " - " << weightTotals[connection] << " miles\n";
+	}
+}
+void printDirectConnection (
+	const graph& citiesGraph,
+	const unsigned int& departureCityIndex,
+	const unsigned int& destinationCityIndex
+) {
+	std::cout << "Direct connection between " << citiesGraph.nameOfVertice (departureCityIndex) <<
+		" and " << citiesGraph.nameOfVertice (destinationCityIndex) << "\n";
+}
+void printNoThroughConnections (
+	const graph& citiesGraph,
+	const unsigned int& departureCityIndex,
+	const unsigned int& destinationCityIndex
+) {
+	std::cout << "No through connection between " << citiesGraph.nameOfVertice (departureCityIndex) <<
+		" and " << citiesGraph.nameOfVertice (destinationCityIndex) << "\n";
 }
