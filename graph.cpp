@@ -42,10 +42,10 @@ void graph::parseFile (
 	const int DESTINATION_WEIGHT = 2;
 	int objectReading = DEPARTURE_NAME;
 	unsigned int nConnections = 0;
-	if (std::getline (dataFile, lineRead) == false)
-		finished = true;
-	else
+	if (std::getline (dataFile, lineRead))
 		lineRead += '\n';
+	else
+		finished = true;
 	while (finished == false) {
 		chRead = lineRead[0];
 		lineRead.erase (0, 1);
@@ -100,10 +100,10 @@ void graph::parseFile (
 			}
 		}
 		if (lineRead.empty ()) {
-			if (std::getline (dataFile, lineRead) == false)
-				finished = true;
-			else
+			if (std::getline (dataFile, lineRead))
 				lineRead += '\n';
+			else
+				finished = true;
 		}
 	}
 }
