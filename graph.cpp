@@ -126,9 +126,9 @@ void graph::addVertice (
 		verticeIndex < m_nVertices;
 		verticeIndex++
 	) {
-		list[verticeIndex].addWeight (0);
+		list[verticeIndex].considerAnotherVertice ();
 	}
-	list.push_back (vertice (verticeName, m_nVertices));
+	list.push_back (weighted_vertice (verticeName, m_nVertices));
 	m_nVertices++;
 }
 void graph::addDestinationVerticesAndEdges (
@@ -205,7 +205,7 @@ bool graph::hasDirectConnectionBetween (
 ) const {
 	bool hasDirectConnection = false;
 	if (departureIndex != destinationIndex &&
-		list[departureIndex].weight (destinationIndex) != 0
+		list[departureIndex].hasEdgeTo (destinationIndex)
 	)
 		hasDirectConnection = true;
 	return hasDirectConnection;
@@ -261,11 +261,11 @@ void graph::findThoroughConnectionsTo (
 			if (vertice == destinationIndex) {
 				s_potentialConnection.pop_back ();
 				if (s_potentialConnection.size () > 1 &&
-					list[indexOfLastConnection].weight (vertice) != 0
+					list[indexOfLastConnection].hasEdgeTo (vertice)
 				)
 					s_thoroughConnections.push_back (s_potentialConnection);
 			} else {
-				if (list[indexOfLastConnection].weight (vertice) != 0) {
+				if (list[indexOfLastConnection].hasEdgeTo (vertice)) {
 				//if connection found
 					findThoroughConnectionsTo (destinationIndex); //recursive
 				} else {
