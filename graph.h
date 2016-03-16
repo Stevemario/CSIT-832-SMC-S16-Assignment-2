@@ -22,6 +22,10 @@ class graph {
 		std::vector<unsigned int>&,
 		std::vector<unsigned int>&
 	);
+	private: static bool canReadALineInto (
+		std::string&,
+		std::ifstream&
+	);
 	private: void addDepartureVertices (
 		const std::vector<std::string>&
 	);

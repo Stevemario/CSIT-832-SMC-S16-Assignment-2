@@ -34,7 +34,6 @@ void graph::parseFile (
 	std::vector<unsigned int>& destinationVerticesAmounts
 ) {
 	std::string lineRead;
-	bool finished = false;
 	char chRead;
 	std::string sRead;
 	const int DEPARTURE_NAME = 0;
@@ -42,11 +41,9 @@ void graph::parseFile (
 	const int DESTINATION_WEIGHT = 2;
 	int objectReading = DEPARTURE_NAME;
 	unsigned int nConnections = 0;
-	if (std::getline (dataFile, lineRead))
-		lineRead += '\n';
-	else
-		finished = true;
-	while (finished == false) {
+	while (lineRead.empty () == false ||
+		canReadALineInto (lineRead, dataFile)
+	) {
 		chRead = lineRead[0];
 		lineRead.erase (0, 1);
 
@@ -99,13 +96,19 @@ void graph::parseFile (
 				break;
 			}
 		}
-		if (lineRead.empty ()) {
-			if (std::getline (dataFile, lineRead))
-				lineRead += '\n';
-			else
-				finished = true;
-		}
 	}
+}
+bool graph::canReadALineInto (
+	std::string& lineRead,
+	std::ifstream& dataFile
+) {
+	bool canReadALine = false;
+	std::getline (dataFile, lineRead);
+	if (lineRead.empty () == false) {
+		canReadALine = true;
+		lineRead += '\n';
+	}
+	return canReadALine;
 }
 void graph::addDepartureVertices (
 	const std::vector<std::string>& departureVerticesNames
