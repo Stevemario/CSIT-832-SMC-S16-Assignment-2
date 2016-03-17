@@ -9,8 +9,13 @@ vertice::vertice (
 		vertice <= nVertices;
 		vertice++
 	) {
-		m_hasEdgeTo.push_back (false);
+		considerAnotherVertice ();
 	}
+}
+vertice::vertice (
+	const std::string& name
+) {
+	m_name = name;
 }
 std::string vertice::name () const {
 	return m_name;

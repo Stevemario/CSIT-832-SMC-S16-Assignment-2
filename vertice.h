@@ -9,6 +9,9 @@ class vertice {
 		const std::string&,
 		const unsigned int&
 	);
+	protected: vertice (
+		const std::string&
+	);
 	public: std::string name () const;
 	public: bool hasEdgeTo (
 		const unsigned int&

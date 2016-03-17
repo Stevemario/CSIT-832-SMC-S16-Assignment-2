@@ -2,13 +2,13 @@ template <class weightType>
 weighted_vertice <weightType>::weighted_vertice (
 	const std::string& name,
 	const unsigned int& nVertices
-) : vertice (name, nVertices) {
+) : vertice (name) {
 	for (
 		unsigned int vertice = 0;
 		vertice <= nVertices;
 		vertice++
 	) {
-		m_weight.push_back (nullptr);
+		considerAnotherVertice ();
 	}
 }
 template <class weightType>
