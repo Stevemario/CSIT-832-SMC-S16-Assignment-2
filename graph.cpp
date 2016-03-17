@@ -5,6 +5,9 @@ connection graph::s_potentialConnection;
 graph::graph () {
 	m_nVertices = 0;
 }
+unsigned int graph::nVertices () const {
+	return m_nVertices;
+}
 void graph::load (
 	std::ifstream& dataFile
 ) {
@@ -190,9 +193,6 @@ void graph::addEdge (
 	const distance& weight
 ) {
 	list[departureIndex].setWeight (destinationIndex, weight);
-}
-unsigned int graph::nVertices () const {
-	return m_nVertices;
 }
 std::string graph::nameOfVertice (
 	const unsigned int& index

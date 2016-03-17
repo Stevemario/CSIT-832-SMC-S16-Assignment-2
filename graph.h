@@ -9,6 +9,7 @@ class graph {
 	private: static std::vector<connection> s_thoroughConnections;
 	private: static connection s_potentialConnection;
 	public: graph ();
+	public: unsigned int nVertices () const;
 	//Loads, as vertices, cities,
 	//loads, as edges, connections, and
 	//loads, as weights, distances in miles between two connected cities,
@@ -47,7 +48,6 @@ class graph {
 		const unsigned int&,
 		const distance&
 	);
-	public: unsigned int nVertices () const;
 	public: std::string nameOfVertice (
 		const unsigned int&
 	) const;
