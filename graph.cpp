@@ -117,7 +117,11 @@ void graph::addDepartureVertices (
 	const std::vector <std::string>& departureVerticesNames
 ) {
 	unsigned int nDepartureVertices = departureVerticesNames.size ();
-	for (unsigned int nVertice = 0; nVertice < nDepartureVertices; nVertice++) {
+	for (
+		unsigned int nVertice = 0;
+		nVertice < nDepartureVertices;
+		nVertice++
+	) {
 		addVertice (departureVerticesNames [nVertice]);
 	}
 }
