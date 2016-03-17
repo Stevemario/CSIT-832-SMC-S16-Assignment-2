@@ -10,6 +10,9 @@ class graph {
 	private: static connection s_potentialConnection;
 	public: graph ();
 	public: unsigned int nVertices () const;
+	public: std::string nameOfVertice (
+		const unsigned int&
+	) const;
 	//Loads, as vertices, cities,
 	//loads, as edges, connections, and
 	//loads, as weights, distances in miles between two connected cities,
@@ -17,6 +20,16 @@ class graph {
 	public: void load (
 		std::ifstream&
 	);
+	public: bool hasDirectConnectionBetween (
+		const unsigned int&,
+		const unsigned int&
+	) const;
+	public: bool hasThroughConnectionBetween (
+		const unsigned int&,
+		const unsigned int&,
+		std::vector <connection>&,
+		std::vector <distance>&
+	) const;
 	private: static void parseFile (
 		std::ifstream&,
 		std::vector <std::string>&,
@@ -48,19 +61,6 @@ class graph {
 		const unsigned int&,
 		const distance&
 	);
-	public: std::string nameOfVertice (
-		const unsigned int&
-	) const;
-	public: bool hasDirectConnectionBetween (
-		const unsigned int&,
-		const unsigned int&
-	) const;
-	public: bool hasThroughConnectionBetween (
-		const unsigned int&,
-		const unsigned int&,
-		std::vector <connection>&,
-		std::vector <distance>&
-	) const;
 	private: void findThoroughConnectionsTo (
 		const unsigned int&
 	) const;

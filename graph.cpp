@@ -8,6 +8,11 @@ graph::graph () {
 unsigned int graph::nVertices () const {
 	return m_nVertices;
 }
+std::string graph::nameOfVertice (
+	const unsigned int& index
+) const {
+	return vertices [index].name ();
+}
 void graph::load (
 	std::ifstream& dataFile
 ) {
@@ -28,6 +33,37 @@ void graph::load (
 		destinationVerticesWeights,
 		destinationVerticesAmounts
 	);
+}
+bool graph::hasDirectConnectionBetween (
+	const unsigned int& departureIndex,
+	const unsigned int& destinationIndex
+) const {
+	bool hasDirectConnection = false;
+	if (departureIndex != destinationIndex &&
+		vertices [departureIndex].hasEdgeTo (destinationIndex)
+	)
+		hasDirectConnection = true;
+	return hasDirectConnection;
+}
+bool graph::hasThroughConnectionBetween (
+	const unsigned int& departureIndex,
+	const unsigned int& destinationIndex,
+	std::vector<connection>& throughConnections,
+	std::vector<distance>& weightTotals
+) const {
+	bool hasThroughConnection = false;
+	if (departureIndex != destinationIndex) {
+		s_potentialConnection.push_back (departureIndex);
+		findThoroughConnectionsTo (destinationIndex);
+		s_potentialConnection.clear ();
+		throughConnections = s_thoroughConnections;
+		s_thoroughConnections.clear ();
+		if (throughConnections.empty () == false) {
+			hasThroughConnection = true;
+			sort (throughConnections, weightTotals, destinationIndex);
+		}
+	}
+	return hasThroughConnection;
 }
 void graph::parseFile (
 	std::ifstream& dataFile,
@@ -197,42 +233,6 @@ void graph::addEdge (
 	const distance& weight
 ) {
 	vertices [departureIndex].setWeight (destinationIndex, weight);
-}
-std::string graph::nameOfVertice (
-	const unsigned int& index
-) const {
-	return vertices [index].name ();
-}
-bool graph::hasDirectConnectionBetween (
-	const unsigned int& departureIndex,
-	const unsigned int& destinationIndex
-) const {
-	bool hasDirectConnection = false;
-	if (departureIndex != destinationIndex &&
-		vertices [departureIndex].hasEdgeTo (destinationIndex)
-	)
-		hasDirectConnection = true;
-	return hasDirectConnection;
-}
-bool graph::hasThroughConnectionBetween (
-	const unsigned int& departureIndex,
-	const unsigned int& destinationIndex,
-	std::vector<connection>& throughConnections,
-	std::vector<distance>& weightTotals
-) const {
-	bool hasThroughConnection = false;
-	if (departureIndex != destinationIndex) {
-		s_potentialConnection.push_back (departureIndex);
-		findThoroughConnectionsTo (destinationIndex);
-		s_potentialConnection.clear ();
-		throughConnections = s_thoroughConnections;
-		s_thoroughConnections.clear ();
-		if (throughConnections.empty () == false) {
-			hasThroughConnection = true;
-			sort (throughConnections, weightTotals, destinationIndex);
-		}
-	}
-	return hasThroughConnection;
 }
 void graph::findThoroughConnectionsTo (
 	const unsigned int& destinationIndex
