@@ -15,19 +15,22 @@ class vertice {
 	) const;
 	public: virtual void considerAnotherVertice ();
 };
+template <class weightType>
 class weighted_vertice : public vertice {
-	private: std::vector <unsigned int> m_weight;
+	private: std::vector <weightType*> m_weight;
 	public: weighted_vertice (
 		const std::string&,
 		const unsigned int&
 	);
-	public: unsigned int weight (
+	public: ~weighted_vertice ();
+	public: weightType weight (
 		const unsigned int&
 	) const;
 	public: void considerAnotherVertice ();
 	public: void setWeight (
 		const unsigned int&,
-		const unsigned int&
+		const weightType&
 	);
 };
+#include "vertice.tpp"
 #endif

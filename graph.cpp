@@ -128,7 +128,7 @@ void graph::addVertice (
 	) {
 		list[verticeIndex].considerAnotherVertice ();
 	}
-	list.push_back (weighted_vertice (verticeName, m_nVertices));
+	list.push_back (weighted_vertice <distance>(verticeName, m_nVertices));
 	m_nVertices++;
 }
 void graph::addDestinationVerticesAndEdges (
