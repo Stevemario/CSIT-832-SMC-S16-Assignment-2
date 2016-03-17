@@ -108,13 +108,14 @@ class non_weighted_graph : public graph {
 		const unsigned int&
 	);
 };
+template <class weightType>
 class weighted_graph : public graph {
 	enum class string_destinations {
 	DEPARTURE_NAME = 0,
 	DESTINATION_NAME = 1,
 	DESTINATION_WEIGHT = 2,
 	};
-	private: std::vector <weighted_vertice <distance>> vertices;
+	private: std::vector <weighted_vertice <weightType>> vertices;
 	public: std::string nameOfVertice (
 		const unsigned int&
 	) const;
@@ -122,7 +123,7 @@ class weighted_graph : public graph {
 		const unsigned int&,
 		const unsigned int&
 	) const;
-	public: distance weight (
+	public: weightType weight (
 		const unsigned int&,
 		const unsigned int&
 	) const;
@@ -159,31 +160,32 @@ class weighted_graph : public graph {
 	) const;
 	public: void sort (
 		std::vector <connection>&,
-		std::vector <distance>&,
+		std::vector <weightType>&,
 		const unsigned int&
 	) const;
 	private: static void parseFile (
 		std::ifstream&,
 		std::vector <std::string>&,
 		std::vector <std::string>&,
-		std::vector <distance>&,
+		std::vector <weightType>&,
 		std::vector <unsigned int>&
 	);
 	private: void addDestinationVerticesAndEdges (
 		const std::vector <std::string>&,
-		const std::vector <distance>&,
+		const std::vector <weightType>&,
 		const std::vector <unsigned int>&
 	);
 	private: void addEdge (
 		const unsigned int&,
 		const unsigned int&,
-		const distance&
+		const weightType&
 	);
 	private: static void swap (
 		std::vector <connection>&,
-		std::vector <distance>&,
+		std::vector <weightType>&,
 		const unsigned int&,
 		const unsigned int&
 	);
 };
+#include "graph.tpp"
 #endif

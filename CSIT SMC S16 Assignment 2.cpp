@@ -7,48 +7,49 @@
 #include "graph.h"
 #include <iostream>
 #include <fstream>
+typedef weighted_graph <distance> graph_of_distances;
 void displayMenu (
 	char&
 );
 void getDepartureCityIndex (
-	const weighted_graph&,
+	const graph_of_distances&,
 	unsigned int&
 );
 void getDestinationCityIndex (
-	const weighted_graph&,
+	const graph_of_distances&,
 	const unsigned int&,
 	unsigned int&
 );
 void printNoConnection (
-	const weighted_graph&,
+	const graph_of_distances&,
 	const unsigned int&,
 	const unsigned int&
 );
 void printInstructionsToReturnToMenu ();
 void printNoDirectConnection (
-	const weighted_graph&,
+	const graph_of_distances&,
 	const unsigned int&,
 	const unsigned int&
 );
 void printThroughConnections (
-	const weighted_graph&,
+	const graph_of_distances&,
 	const unsigned int&,
 	const unsigned int&,
 	std::vector <connection>&
 );
 void printDirectConnection (
-	const weighted_graph&,
+	const graph_of_distances&,
 	const unsigned int&,
 	const unsigned int&
 );
 void printNoThroughConnections (
-	const weighted_graph&,
+	const graph_of_distances&,
 	const unsigned int&,
 	const unsigned int&
 );
 void main () {
 	std::ifstream dataFile ("load.txt");
-	weighted_graph citiesGraph;
+	graph_of_distances citiesGraph;
 	char userChoice;
 	bool programShouldEnd = false;
 	unsigned int departureCityIndex;
@@ -101,7 +102,7 @@ void displayMenu (
 	std::cout << "\n";
 }
 void getDepartureCityIndex (
-	const weighted_graph& citiesGraph,
+	const graph_of_distances& citiesGraph,
 	unsigned int& departureCityIndex
 ) {
 	const unsigned int nVertices = citiesGraph.nVertices ();
@@ -118,7 +119,7 @@ void getDepartureCityIndex (
 	departureCityIndex--;
 }
 void getDestinationCityIndex (
-	const weighted_graph& citiesGraph,
+	const graph_of_distances& citiesGraph,
 	const unsigned int& departureCityIndex,
 	unsigned int& destinationCityIndex
 ) {
@@ -146,7 +147,7 @@ void getDestinationCityIndex (
 		destinationCityIndex--;
 }
 void printNoConnection (
-	const weighted_graph& citiesGraph,
+	const graph_of_distances& citiesGraph,
 	const unsigned int& departureCityIndex,
 	const unsigned int& destinationCityIndex
 ) {
@@ -161,7 +162,7 @@ void printInstructionsToReturnToMenu () {
 	std::cout << "\n";
 }
 void printNoDirectConnection (
-	const weighted_graph& citiesGraph,
+	const graph_of_distances& citiesGraph,
 	const unsigned int& departureCityIndex,
 	const unsigned int& destinationCityIndex
 ) {
@@ -169,7 +170,7 @@ void printNoDirectConnection (
 		" and " << citiesGraph.nameOfVertice (destinationCityIndex) << "\n";
 }
 void printThroughConnections (
-	const weighted_graph& citiesGraph,
+	const graph_of_distances& citiesGraph,
 	const unsigned int& departureCityIndex,
 	const unsigned int& destinationCityIndex,
 	std::vector <connection>& throughConnections
@@ -211,7 +212,7 @@ void printThroughConnections (
 	}
 }
 void printDirectConnection (
-	const weighted_graph& citiesGraph,
+	const graph_of_distances& citiesGraph,
 	const unsigned int& departureCityIndex,
 	const unsigned int& destinationCityIndex
 ) {
@@ -219,7 +220,7 @@ void printDirectConnection (
 		" and " << citiesGraph.nameOfVertice (destinationCityIndex) << "\n";
 }
 void printNoThroughConnections (
-	const weighted_graph& citiesGraph,
+	const graph_of_distances& citiesGraph,
 	const unsigned int& departureCityIndex,
 	const unsigned int& destinationCityIndex
 ) {
