@@ -192,7 +192,7 @@ void graph::addDestinationVerticesAndEdges (
 		nDepartureVertice++
 	) {
 	//for every departure vertice
-		destinationVerticesAmount = destinationVerticesAmounts[nDepartureVertice]; //don't change
+		destinationVerticesAmount = destinationVerticesAmounts [nDepartureVertice]; //don't change
 		for (
 			nDestinationVertice = 0;
 			nDestinationVertice < destinationVerticesAmount;

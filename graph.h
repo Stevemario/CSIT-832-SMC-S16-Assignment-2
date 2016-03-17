@@ -2,7 +2,7 @@
 #define GRAPH_H
 #include "vertice.h"
 typedef unsigned int distance;
-typedef std::vector<unsigned int> connection;
+typedef std::vector <unsigned int> connection;
 class graph {
 	private: std::vector <weighted_vertice <distance>> vertices;
 	private: unsigned int m_nVertices;

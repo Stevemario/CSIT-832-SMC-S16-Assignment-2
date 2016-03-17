@@ -34,8 +34,8 @@ void printThroughConnections (
 	const graph&,
 	const unsigned int&,
 	const unsigned int&,
-	const std::vector<connection>&,
-	const std::vector<distance>&
+	const std::vector <connection>&,
+	const std::vector <distance>&
 );
 void printDirectConnection (
 	const graph&,
@@ -56,8 +56,8 @@ void main () {
 	unsigned int destinationCityIndex;
 	bool thereIsNoDirectConnection;
 	bool thereIsNoThroughConnection;
-	std::vector<connection> throughConnections;
-	std::vector<distance> weightTotals;
+	std::vector <connection> throughConnections;
+	std::vector <distance> weightTotals;
 	citiesGraph.load (dataFile);
 	dataFile.close ();
 	do {
@@ -99,7 +99,7 @@ void displayMenu (
 	std::cout << "1. Choose departure city\n" <<
 		"2. Exit\n";
 	std::cin >> userChoice;
-	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
+	std::cin.ignore (std::numeric_limits <std::streamsize>::max (), '\n');
 	std::cout << "\n";
 }
 void getDepartureCityIndex (
@@ -115,7 +115,7 @@ void getDepartureCityIndex (
 		std::cout << vertice + 1 << ". " << citiesGraph.nameOfVertice (vertice) << "\n";
 	std::cout << "Choose city: ";
 	std::cin >> departureCityIndex;
-	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
+	std::cin.ignore (std::numeric_limits <std::streamsize>::max (), '\n');
 	std::cout << "\n";
 	departureCityIndex--;
 }
@@ -142,7 +142,7 @@ void getDestinationCityIndex (
 	}
 	std::cout << "Choose city: ";
 	std::cin >> destinationCityIndex;
-	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
+	std::cin.ignore (std::numeric_limits <std::streamsize>::max (), '\n');
 	std::cout << "\n";
 	if (destinationCityIndex - 1 < departureCityIndex)
 		destinationCityIndex--;
@@ -159,7 +159,7 @@ void printInstructionsToReturnToMenu () {
 	char userChoice;
 	std::cout << "Press any key to return to menu.\n";
 	std::cin >> userChoice;
-	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
+	std::cin.ignore (std::numeric_limits <std::streamsize>::max (), '\n');
 	std::cout << "\n";
 }
 void printNoDirectConnection (
@@ -174,8 +174,8 @@ void printThroughConnections (
 	const graph& citiesGraph,
 	const unsigned int& departureCityIndex,
 	const unsigned int& destinationCityIndex,
-	const std::vector<connection>& throughConnections,
-	const std::vector<distance>& weightTotals
+	const std::vector <connection>& throughConnections,
+	const std::vector <distance>& weightTotals
 ) {
 	unsigned int nConnections;
 	unsigned int connection;
@@ -195,7 +195,7 @@ void printThroughConnections (
 			departure < nDepartures;
 			departure++
 		) {
-			std::cout << citiesGraph.nameOfVertice (throughConnections[connection][departure]);
+			std::cout << citiesGraph.nameOfVertice (throughConnections [connection] [departure]);
 			if (
 				nDepartures > 1 &&
 				//there are multiple layovers, and
@@ -208,7 +208,7 @@ void printThroughConnections (
 					std::cout << "and ";
 			}
 		}
-		std::cout << " - " << weightTotals[connection] << " miles\n";
+		std::cout << " - " << weightTotals [connection] << " miles\n";
 	}
 }
 void printDirectConnection (
