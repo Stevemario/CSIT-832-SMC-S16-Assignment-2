@@ -16,6 +16,9 @@ class vertice {
 	public: bool hasEdgeTo (
 		const unsigned int&
 	) const;
+	public: virtual void addEdge (
+		const unsigned int&
+	);
 	public: virtual void considerAnotherVertice ();
 };
 template <class weightType>
@@ -29,6 +32,9 @@ class weighted_vertice : public vertice {
 	public: weightType weight (
 		const unsigned int&
 	) const;
+	private: void addEdge (
+		const unsigned int&
+	);
 	public: void considerAnotherVertice ();
 	public: void setWeight (
 		const unsigned int&,

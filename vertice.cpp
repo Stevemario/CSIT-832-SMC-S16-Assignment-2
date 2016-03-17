@@ -25,6 +25,11 @@ bool vertice::hasEdgeTo (
 ) const {
 	return m_hasEdgeTo [index];
 }
+void vertice::addEdge (
+	const unsigned int& index
+) {
+	m_hasEdgeTo [index] = true;
+}
 void vertice::considerAnotherVertice () {
 	m_hasEdgeTo.push_back (false);
 }

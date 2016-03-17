@@ -30,6 +30,13 @@ weightType weighted_vertice <weightType>::weight (
 	return *m_weight [index];
 }
 template <class weightType>
+void weighted_vertice <weightType>::addEdge (
+	const unsigned int& index
+) {
+	//DO NOTHING
+	//THIS IS HERE SO YOU DON'T CALL THE BASE CLASS FUNCTION
+}
+template <class weightType>
 void weighted_vertice <weightType>::considerAnotherVertice () {
 	m_hasEdgeTo.push_back (false);
 	m_weight.push_back (nullptr);
