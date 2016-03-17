@@ -124,27 +124,28 @@ void getDestinationCityIndex (
 	const unsigned int& departureCityIndex,
 	unsigned int& destinationCityIndex
 ) {
-	const unsigned int nCities = citiesGraph.nVertices ();
-	unsigned int nChoiceForCity;
-	for (unsigned int cityIndex = 0; cityIndex < nCities; cityIndex++) {
-		if (cityIndex < departureCityIndex) {
-			nChoiceForCity = cityIndex + 1;
-			std::cout << nChoiceForCity << ". " << citiesGraph.nameOfVertice (cityIndex) << "\n";
-		} else if (cityIndex == departureCityIndex) {
+	const unsigned int nVertices = citiesGraph.nVertices ();
+	for (
+		unsigned int vertice = 0;
+		vertice < nVertices;
+		vertice++
+	) {
+		if (vertice < departureCityIndex) {
+			destinationCityIndex = vertice + 1;
+			std::cout << destinationCityIndex << ". " << citiesGraph.nameOfVertice (vertice) << "\n";
+		} else if (vertice == departureCityIndex) {
 			//don't show this choice;
-		} else { //cityIndex > departureCityIndex
-			nChoiceForCity = cityIndex;
-			std::cout << nChoiceForCity << ". " << citiesGraph.nameOfVertice (cityIndex) << "\n";
+		} else { //vertice > departureCityIndex
+			destinationCityIndex = vertice;
+			std::cout << destinationCityIndex << ". " << citiesGraph.nameOfVertice (vertice) << "\n";
 		}
 	}
 	std::cout << "Choose city: ";
-	std::cin >> nChoiceForCity;
+	std::cin >> destinationCityIndex;
 	std::cin.ignore (std::numeric_limits<std::streamsize>::max (), '\n');
 	std::cout << "\n";
-	if (nChoiceForCity - 1 < departureCityIndex)
-		destinationCityIndex = nChoiceForCity - 1;
-	else //index AFTER the destination
-		destinationCityIndex = nChoiceForCity;
+	if (destinationCityIndex - 1 < departureCityIndex)
+		destinationCityIndex--;
 }
 void printNoConnection (
 	const graph& citiesGraph,
