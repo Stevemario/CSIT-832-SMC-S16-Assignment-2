@@ -1,6 +1,6 @@
 #include "graph.h"
 #include <fstream>
-std::vector<connection> graph::s_thoroughConnections;
+std::vector <connection> graph::s_thoroughConnections;
 connection graph::s_potentialConnection;
 graph::graph () {
 	m_nVertices = 0;
@@ -11,10 +11,10 @@ unsigned int graph::nVertices () const {
 void graph::load (
 	std::ifstream& dataFile
 ) {
-	std::vector<std::string> departureVerticesNames;
-	std::vector<std::string> destinationVerticesNames;
-	std::vector<distance> destinationVerticesWeights;
-	std::vector<unsigned int> destinationVerticesAmounts;
+	std::vector <std::string> departureVerticesNames;
+	std::vector <std::string> destinationVerticesNames;
+	std::vector <distance> destinationVerticesWeights;
+	std::vector <unsigned int> destinationVerticesAmounts;
 	parseFile (
 		dataFile,
 		departureVerticesNames,
@@ -31,10 +31,10 @@ void graph::load (
 }
 void graph::parseFile (
 	std::ifstream& dataFile,
-	std::vector<std::string>& departureVerticesNames,
-	std::vector<std::string>& destinationVerticesNames,
-	std::vector<distance>& destinationVerticesWeights,
-	std::vector<unsigned int>& destinationVerticesAmounts
+	std::vector <std::string>& departureVerticesNames,
+	std::vector <std::string>& destinationVerticesNames,
+	std::vector <distance>& destinationVerticesWeights,
+	std::vector <unsigned int>& destinationVerticesAmounts
 ) {
 	std::string lineRead;
 	char chRead;
@@ -47,7 +47,7 @@ void graph::parseFile (
 	while (lineRead.empty () == false ||
 		canReadALineInto (lineRead, dataFile)
 	) {
-		chRead = lineRead[0];
+		chRead = lineRead [0];
 		lineRead.erase (0, 1);
 
 		switch (chRead) {
@@ -114,11 +114,11 @@ bool graph::canReadALineInto (
 	return canReadALine;
 }
 void graph::addDepartureVertices (
-	const std::vector<std::string>& departureVerticesNames
+	const std::vector <std::string>& departureVerticesNames
 ) {
 	unsigned int nDepartureVertices = departureVerticesNames.size ();
 	for (unsigned int nVertice = 0; nVertice < nDepartureVertices; nVertice++) {
-		addVertice (departureVerticesNames[nVertice]);
+		addVertice (departureVerticesNames [nVertice]);
 	}
 }
 void graph::addVertice (
@@ -129,15 +129,15 @@ void graph::addVertice (
 		verticeIndex < m_nVertices;
 		verticeIndex++
 	) {
-		list[verticeIndex].considerAnotherVertice ();
+		list [verticeIndex].considerAnotherVertice ();
 	}
-	list.push_back (weighted_vertice <distance>(verticeName, m_nVertices));
+	list.push_back (weighted_vertice <distance> (verticeName, m_nVertices));
 	m_nVertices++;
 }
 void graph::addDestinationVerticesAndEdges (
-	const std::vector<std::string>& destinationVerticesNames,
-	const std::vector<distance>& destinationVerticesWeights,
-	const std::vector<unsigned int>& destinationVerticesAmounts
+	const std::vector <std::string>& destinationVerticesNames,
+	const std::vector <distance>& destinationVerticesWeights,
+	const std::vector <unsigned int>& destinationVerticesAmounts
 ) {
 	unsigned int nDepartureVertice;
 	const unsigned int nDepartureVertices = m_nVertices;
@@ -159,12 +159,12 @@ void graph::addDestinationVerticesAndEdges (
 			nDestinationVertice++
 		) {
 		//for every destination
-			destinationName = destinationVerticesNames[nDestinationParametersIndex];
+			destinationName = destinationVerticesNames [nDestinationParametersIndex];
 			if (this->contains (destinationName, nDestinationGraphIndex))
-				addEdge (nDepartureVertice, nDestinationGraphIndex, destinationVerticesWeights[nDestinationParametersIndex]);
+				addEdge (nDepartureVertice, nDestinationGraphIndex, destinationVerticesWeights [nDestinationParametersIndex]);
 			else {
 				addVertice (destinationName);
-				addEdge (nDepartureVertice, m_nVertices - 1, destinationVerticesWeights[nDestinationParametersIndex]);
+				addEdge (nDepartureVertice, m_nVertices - 1, destinationVerticesWeights [nDestinationParametersIndex]);
 			}
 			nDestinationParametersIndex++;
 		}
@@ -180,7 +180,7 @@ bool graph::contains (
 		contained == false && verticeIndex < m_nVertices;
 		verticeIndex++
 	) {
-		if (list[verticeIndex].name ().compare (destinationName) == 0) {
+		if (list [verticeIndex].name ().compare (destinationName) == 0) {
 			contained = true;
 			nDestinationGraphIndex = verticeIndex;
 		}
@@ -192,12 +192,12 @@ void graph::addEdge (
 	const unsigned int& destinationIndex,
 	const distance& weight
 ) {
-	list[departureIndex].setWeight (destinationIndex, weight);
+	list [departureIndex].setWeight (destinationIndex, weight);
 }
 std::string graph::nameOfVertice (
 	const unsigned int& index
 ) const {
-	return list[index].name ();
+	return list [index].name ();
 }
 bool graph::hasDirectConnectionBetween (
 	const unsigned int& departureIndex,
@@ -205,7 +205,7 @@ bool graph::hasDirectConnectionBetween (
 ) const {
 	bool hasDirectConnection = false;
 	if (departureIndex != destinationIndex &&
-		list[departureIndex].hasEdgeTo (destinationIndex)
+		list [departureIndex].hasEdgeTo (destinationIndex)
 	)
 		hasDirectConnection = true;
 	return hasDirectConnection;
@@ -261,11 +261,11 @@ void graph::findThoroughConnectionsTo (
 			if (vertice == destinationIndex) {
 				s_potentialConnection.pop_back ();
 				if (s_potentialConnection.size () > 1 &&
-					list[indexOfLastConnection].hasEdgeTo (vertice)
+					list [indexOfLastConnection].hasEdgeTo (vertice)
 				)
 					s_thoroughConnections.push_back (s_potentialConnection);
 			} else {
-				if (list[indexOfLastConnection].hasEdgeTo (vertice)) {
+				if (list [indexOfLastConnection].hasEdgeTo (vertice)) {
 				//if connection found
 					findThoroughConnectionsTo (destinationIndex); //recursive
 				} else {
@@ -294,7 +294,7 @@ void graph::sort (
 		throughConnection++
 	) {
 		weightTotal = 0;
-		nDepartures = throughConnections[throughConnection].size ();
+		nDepartures = throughConnections [throughConnection].size ();
 		for (
 			departure = 0;
 			departure < nDepartures;
@@ -302,12 +302,12 @@ void graph::sort (
 		) {
 			if (departure != nDepartures - 1)
 				weightTotal +=
-					list[(throughConnections[throughConnection][departure])].weight (
-					throughConnections[throughConnection][departure + 1]
+					list [throughConnections [throughConnection] [departure]].weight (
+					throughConnections [throughConnection] [departure + 1]
 					);
 			else
 				weightTotal +=
-					list[(throughConnections[throughConnection][departure])].weight (
+					list [throughConnections [throughConnection] [departure]].weight (
 					destinationIndex
 					);
 		}
@@ -323,7 +323,7 @@ void graph::sort (
 			successorConnection < nThroughConnections;
 			successorConnection++
 		) {
-			if (weightTotals[successorConnection] < weightTotals[throughConnection])
+			if (weightTotals [successorConnection] < weightTotals [throughConnection])
 				swap (throughConnections, weightTotals, throughConnection, successorConnection);
 		}
 	}
@@ -334,10 +334,10 @@ void graph::swap (
 	const unsigned int& index1,
 	const unsigned int& index2
 ) {
-		connection tempConnection = throughConnections[index1];
-		distance tempWeightTotal = weightTotals[index1];
-		throughConnections[index1] = throughConnections[index2];
-		weightTotals[index1] = weightTotals[index2];
-		throughConnections[index2] = tempConnection;
-		weightTotals[index2] = tempWeightTotal;
+		connection tempConnection = throughConnections [index1];
+		distance tempWeightTotal = weightTotals [index1];
+		throughConnections [index1] = throughConnections [index2];
+		weightTotals [index1] = weightTotals [index2];
+		throughConnections [index2] = tempConnection;
+		weightTotals [index2] = tempWeightTotal;
 }

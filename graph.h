@@ -6,7 +6,7 @@ typedef std::vector<unsigned int> connection;
 class graph {
 	private: std::vector <weighted_vertice <distance>> list;
 	private: unsigned int m_nVertices;
-	private: static std::vector<connection> s_thoroughConnections;
+	private: static std::vector <connection> s_thoroughConnections;
 	private: static connection s_potentialConnection;
 	public: graph ();
 	public: unsigned int nVertices () const;
@@ -19,25 +19,25 @@ class graph {
 	);
 	private: static void parseFile (
 		std::ifstream&,
-		std::vector<std::string>&,
-		std::vector<std::string>&,
-		std::vector<distance>&,
-		std::vector<unsigned int>&
+		std::vector <std::string>&,
+		std::vector <std::string>&,
+		std::vector <distance>&,
+		std::vector <unsigned int>&
 	);
 	private: static bool canReadALineInto (
 		std::string&,
 		std::ifstream&
 	);
 	private: void addDepartureVertices (
-		const std::vector<std::string>&
+		const std::vector <std::string>&
 	);
 	private: void addVertice (
 		const std::string&
 	);
 	private: void addDestinationVerticesAndEdges (
-		const std::vector<std::string>&,
-		const std::vector<distance>&,
-		const std::vector<unsigned int>&
+		const std::vector <std::string>&,
+		const std::vector <distance>&,
+		const std::vector <unsigned int>&
 	);
 	private: bool contains (
 		const std::string&,
@@ -58,20 +58,20 @@ class graph {
 	public: bool hasThroughConnectionBetween (
 		const unsigned int&,
 		const unsigned int&,
-		std::vector<connection>&,
-		std::vector<distance>&
+		std::vector <connection>&,
+		std::vector <distance>&
 	) const;
 	private: void findThoroughConnectionsTo (
 		const unsigned int&
 	) const;
 	private: void sort (
-		std::vector<connection>&,
-		std::vector<distance>&,
+		std::vector <connection>&,
+		std::vector <distance>&,
 		const unsigned int&
 	) const;
 	private: static void swap (
-		std::vector<connection>&,
-		std::vector<distance>&,
+		std::vector <connection>&,
+		std::vector <distance>&,
 		const unsigned int&,
 		const unsigned int&
 	);
