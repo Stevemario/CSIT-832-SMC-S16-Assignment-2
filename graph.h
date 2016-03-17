@@ -6,8 +6,6 @@ typedef std::vector <unsigned int> connection;
 class graph {
 	private: std::vector <weighted_vertice <distance>> vertices;
 	private: unsigned int m_nVertices;
-	private: static std::vector <connection> s_thoroughConnections;
-	private: static connection s_potentialConnection;
 	public: graph ();
 	public: unsigned int nVertices () const;
 	public: std::string nameOfVertice (
@@ -62,7 +60,9 @@ class graph {
 		const distance&
 	);
 	private: void findThoroughConnectionsTo (
-		const unsigned int&
+		const unsigned int&,
+		std::vector <connection>&,
+		connection&
 	) const;
 	private: void sort (
 		std::vector <connection>&,

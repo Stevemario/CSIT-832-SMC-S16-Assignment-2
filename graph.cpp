@@ -1,7 +1,5 @@
 #include "graph.h"
 #include <fstream>
-std::vector <connection> graph::s_thoroughConnections;
-connection graph::s_potentialConnection;
 graph::graph () {
 	m_nVertices = 0;
 }
@@ -51,13 +49,11 @@ bool graph::hasThroughConnectionBetween (
 	std::vector<connection>& throughConnections,
 	std::vector<distance>& weightTotals
 ) const {
+	connection potentialConnection;
 	bool hasThroughConnection = false;
 	if (departureIndex != destinationIndex) {
-		s_potentialConnection.push_back (departureIndex);
-		findThoroughConnectionsTo (destinationIndex);
-		s_potentialConnection.clear ();
-		throughConnections = s_thoroughConnections;
-		s_thoroughConnections.clear ();
+		potentialConnection.push_back (departureIndex);
+		findThoroughConnectionsTo (destinationIndex, throughConnections, potentialConnection);
 		if (throughConnections.empty () == false) {
 			hasThroughConnection = true;
 			sort (throughConnections, weightTotals, destinationIndex);
@@ -235,7 +231,9 @@ void graph::addEdge (
 	vertices [departureIndex].setWeight (destinationIndex, weight);
 }
 void graph::findThoroughConnectionsTo (
-	const unsigned int& destinationIndex
+	const unsigned int& destinationIndex,
+	std::vector <connection>& throughConnections,
+	connection& potentialConnection
 ) const {
 	unsigned int vertice;
 	unsigned int nConnection;
@@ -248,38 +246,38 @@ void graph::findThoroughConnectionsTo (
 		vertice++
 	) {
 	//for every vertice
-		nConnections = s_potentialConnection.size ();
+		nConnections = potentialConnection.size ();
 		goingSomewhereTwice = false;
 		for (
 			nConnection = 0;
 			nConnection < nConnections;
 			nConnection++
 		) {
-			indexOfLastConnection = s_potentialConnection[nConnection];
+			indexOfLastConnection = potentialConnection[nConnection];
 			if (vertice == indexOfLastConnection)
 			//because of loop this tells us if the vertice is ANY connection
 				goingSomewhereTwice = true;
 		}
 		if (goingSomewhereTwice == false) {
-			s_potentialConnection.push_back (vertice);
+			potentialConnection.push_back (vertice);
 			if (vertice == destinationIndex) {
-				s_potentialConnection.pop_back ();
-				if (s_potentialConnection.size () > 1 &&
+				potentialConnection.pop_back ();
+				if (potentialConnection.size () > 1 &&
 					vertices [indexOfLastConnection].hasEdgeTo (vertice)
 				)
-					s_thoroughConnections.push_back (s_potentialConnection);
+					throughConnections.push_back (potentialConnection);
 			} else {
 				if (vertices [indexOfLastConnection].hasEdgeTo (vertice)) {
 				//if connection found
-					findThoroughConnectionsTo (destinationIndex); //recursive
+					findThoroughConnectionsTo (destinationIndex, throughConnections, potentialConnection); //recursive
 				} else {
 				//if connection not found
-					s_potentialConnection.pop_back ();
+					potentialConnection.pop_back ();
 				}
 			}
 		}
 	}
-	s_potentialConnection.pop_back ();
+	potentialConnection.pop_back ();
 }
 void graph::sort (
 	std::vector<connection>& throughConnections,
