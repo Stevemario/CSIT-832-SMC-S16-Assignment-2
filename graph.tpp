@@ -181,7 +181,7 @@ void weighted_graph <weightType>::sort (
 		throughConnection < nThroughConnections;
 		throughConnection++
 	) {
-		weightTotal = 0;
+		setEmpty (weightTotal);
 		nDepartures = throughConnections [throughConnection].size ();
 		for (
 			departure = 0;
@@ -225,6 +225,7 @@ void weighted_graph <weightType>::parseFile (
 	std::string lineRead;
 	char chRead;
 	std::string sRead;
+	weightType temp;
 
 	string_destinations destination = string_destinations::DEPARTURE_NAME;
 	unsigned int nConnections = 0;
@@ -259,7 +260,8 @@ void weighted_graph <weightType>::parseFile (
 					}
 					case string_destinations::DESTINATION_WEIGHT:
 					{
-						destinationVerticesWeights.push_back (std::stoi (sRead));
+						setWeight (temp, sRead);
+						destinationVerticesWeights.push_back (temp);
 						nConnections++;
 						sRead.clear ();
 						destination = string_destinations::DESTINATION_NAME;
@@ -274,7 +276,8 @@ void weighted_graph <weightType>::parseFile (
 			}
 			case '\n':
 			{
-				destinationVerticesWeights.push_back (std::stoi (sRead));
+				setWeight (temp, sRead);
+				destinationVerticesWeights.push_back (temp);
 				nConnections++;
 				sRead.clear ();
 				destinationVerticesAmounts.push_back (nConnections);

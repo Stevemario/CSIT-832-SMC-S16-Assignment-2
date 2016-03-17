@@ -180,6 +180,7 @@ void printThroughConnections (
 	unsigned int connection;
 	unsigned int nDepartures;
 	unsigned int departure;
+	std::string weightTotal;
 	citiesGraph.sort (throughConnections, weightTotals, destinationCityIndex);
 	nConnections = throughConnections.size ();
 	for (
@@ -208,7 +209,8 @@ void printThroughConnections (
 					std::cout << "and ";
 			}
 		}
-		std::cout << " - " << weightTotals [connection] << " miles\n";
+		getWeight (weightTotal, weightTotals [connection]);
+		std::cout << " - " << weightTotal << " miles\n";
 	}
 }
 void printDirectConnection (

@@ -7,6 +7,17 @@ bool canReadALineInto (
 	std::string&,
 	std::ifstream&
 );
+void setWeight (
+	distance&,
+	const std::string&
+);
+void getWeight (
+	std::string&,
+	const distance&
+);
+void setEmpty (
+	distance&
+);
 class graph {
 	protected: unsigned int m_nVertices;
 	protected: graph ();
@@ -109,6 +120,21 @@ class non_weighted_graph : public graph {
 	);
 };
 template <class weightType>
+//weighted_graph uses the following weightType classes functions:
+//1. void setWeight (
+//	weightType&,
+//	const std::string
+//);
+//2. void getWeight (
+//	std::string&,
+//	const distance&
+//);
+//3. void setEmpty (
+//	distance&
+//);
+//4. operator+= for weightType
+//5. operator< for weightType
+//SO YOU MUST HAVE THEM!
 class weighted_graph : public graph {
 	enum class string_destinations {
 	DEPARTURE_NAME = 0,
