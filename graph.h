@@ -20,7 +20,7 @@ class graph {
 		std::ifstream&,
 		std::vector<std::string>&,
 		std::vector<std::string>&,
-		std::vector<unsigned int>&,
+		std::vector<distance>&,
 		std::vector<unsigned int>&
 	);
 	private: static bool canReadALineInto (
@@ -35,7 +35,7 @@ class graph {
 	);
 	private: void addDestinationVerticesAndEdges (
 		const std::vector<std::string>&,
-		const std::vector<unsigned int>&,
+		const std::vector<distance>&,
 		const std::vector<unsigned int>&
 	);
 	private: bool contains (
@@ -45,7 +45,7 @@ class graph {
 	private: void addEdge (
 		const unsigned int&,
 		const unsigned int&,
-		const unsigned int&
+		const distance&
 	);
 	public: unsigned int nVertices () const;
 	public: std::string nameOfVertice (
@@ -59,19 +59,19 @@ class graph {
 		const unsigned int&,
 		const unsigned int&,
 		std::vector<connection>&,
-		std::vector<unsigned int>&
+		std::vector<distance>&
 	) const;
 	private: void findThoroughConnectionsTo (
 		const unsigned int&
 	) const;
 	private: void sort (
 		std::vector<connection>&,
-		std::vector<unsigned int>&,
+		std::vector<distance>&,
 		const unsigned int&
 	) const;
 	private: static void swap (
 		std::vector<connection>&,
-		std::vector<unsigned int>&,
+		std::vector<distance>&,
 		const unsigned int&,
 		const unsigned int&
 	);

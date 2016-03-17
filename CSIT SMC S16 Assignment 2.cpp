@@ -35,7 +35,7 @@ void printThroughConnections (
 	const unsigned int&,
 	const unsigned int&,
 	const std::vector<connection>&,
-	const std::vector<unsigned int>&
+	const std::vector<distance>&
 );
 void printDirectConnection (
 	const graph&,
@@ -57,7 +57,7 @@ void main () {
 	bool thereIsNoDirectConnection;
 	bool thereIsNoThroughConnection;
 	std::vector<connection> throughConnections;
-	std::vector<unsigned int> weightTotals;
+	std::vector<distance> weightTotals;
 	citiesGraph.load (dataFile);
 	dataFile.close ();
 	do {
@@ -174,7 +174,7 @@ void printThroughConnections (
 	const unsigned int& departureCityIndex,
 	const unsigned int& destinationCityIndex,
 	const std::vector<connection>& throughConnections,
-	const std::vector<unsigned int>& weightTotals
+	const std::vector<distance>& weightTotals
 ) {
 	unsigned int nConnections;
 	unsigned int connection;

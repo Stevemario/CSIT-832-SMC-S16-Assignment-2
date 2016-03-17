@@ -10,7 +10,7 @@ void graph::load (
 ) {
 	std::vector<std::string> departureVerticesNames;
 	std::vector<std::string> destinationVerticesNames;
-	std::vector<unsigned int> destinationVerticesWeights;
+	std::vector<distance> destinationVerticesWeights;
 	std::vector<unsigned int> destinationVerticesAmounts;
 	parseFile (
 		dataFile,
@@ -30,7 +30,7 @@ void graph::parseFile (
 	std::ifstream& dataFile,
 	std::vector<std::string>& departureVerticesNames,
 	std::vector<std::string>& destinationVerticesNames,
-	std::vector<unsigned int>& destinationVerticesWeights,
+	std::vector<distance>& destinationVerticesWeights,
 	std::vector<unsigned int>& destinationVerticesAmounts
 ) {
 	std::string lineRead;
@@ -133,7 +133,7 @@ void graph::addVertice (
 }
 void graph::addDestinationVerticesAndEdges (
 	const std::vector<std::string>& destinationVerticesNames,
-	const std::vector<unsigned int>& destinationVerticesWeights,
+	const std::vector<distance>& destinationVerticesWeights,
 	const std::vector<unsigned int>& destinationVerticesAmounts
 ) {
 	unsigned int nDepartureVertice;
@@ -187,7 +187,7 @@ bool graph::contains (
 void graph::addEdge (
 	const unsigned int& departureIndex,
 	const unsigned int& destinationIndex,
-	const unsigned int& weight
+	const distance& weight
 ) {
 	list[departureIndex].setWeight (destinationIndex, weight);
 }
@@ -214,7 +214,7 @@ bool graph::hasThroughConnectionBetween (
 	const unsigned int& departureIndex,
 	const unsigned int& destinationIndex,
 	std::vector<connection>& throughConnections,
-	std::vector<unsigned int>& weightTotals
+	std::vector<distance>& weightTotals
 ) const {
 	bool hasThroughConnection = false;
 	if (departureIndex != destinationIndex) {
@@ -279,12 +279,12 @@ void graph::findThoroughConnectionsTo (
 }
 void graph::sort (
 	std::vector<connection>& throughConnections,
-	std::vector<unsigned int>& weightTotals,
+	std::vector<distance>& weightTotals,
 	const unsigned int& destinationIndex
 ) const {
 	unsigned int throughConnection;
 	unsigned int nThroughConnections = throughConnections.size ();
-	unsigned int weightTotal;
+	distance weightTotal;
 	unsigned int nDepartures;
 	unsigned int departure;
 	unsigned int successorConnection;
@@ -330,12 +330,12 @@ void graph::sort (
 }
 void graph::swap (
 	std::vector<connection>& throughConnections,
-	std::vector<unsigned int>& weightTotals,
+	std::vector<distance>& weightTotals,
 	const unsigned int& index1,
 	const unsigned int& index2
 ) {
 		connection tempConnection = throughConnections[index1];
-		unsigned int tempWeightTotal = weightTotals[index1];
+		distance tempWeightTotal = weightTotals[index1];
 		throughConnections[index1] = throughConnections[index2];
 		weightTotals[index1] = weightTotals[index2];
 		throughConnections[index2] = tempConnection;
