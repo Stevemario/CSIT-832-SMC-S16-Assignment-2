@@ -1,22 +1,10 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 #include "vertice.h"
-typedef unsigned int distance;
 typedef std::vector <unsigned int> connection;
 bool canReadALineInto (
 	std::string&,
 	std::ifstream&
-);
-void setWeight (
-	distance&,
-	const std::string&
-);
-void getWeight (
-	std::string&,
-	const distance&
-);
-void setEmpty (
-	distance&
 );
 class graph {
 	protected: unsigned int m_nVertices;
@@ -67,10 +55,6 @@ class non_weighted_graph : public graph {
 		const unsigned int&
 	) const;
 	public: bool hasEdge (
-		const unsigned int&,
-		const unsigned int&
-	) const;
-	public: distance weight (
 		const unsigned int&,
 		const unsigned int&
 	) const;

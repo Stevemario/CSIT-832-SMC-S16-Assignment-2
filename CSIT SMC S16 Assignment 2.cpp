@@ -5,6 +5,7 @@
 //Assignment 2
 //This software uses a graph to represent the GenghisAir flight cities network.
 #include "graph.h"
+#include "distance.h"
 #include <iostream>
 #include <fstream>
 typedef weighted_graph <distance> graph_of_distances;
