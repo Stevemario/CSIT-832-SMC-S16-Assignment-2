@@ -1,6 +1,6 @@
 #ifndef GRAPH_H
 #define GRAPH_H
-#include "vertice.h"
+#include "vertex.h"
 typedef std::vector <unsigned int> connection;
 bool canReadALineInto (
 	std::string&,
@@ -50,7 +50,7 @@ class non_weighted_graph : public graph {
 	DEPARTURE_NAME = 0,
 	DESTINATION_NAME = 1,
 	};
-	private: std::vector <vertice> vertices;
+	private: std::vector <vertex> vertices;
 	public: std::string nameOfVertice (
 		const unsigned int&
 	) const;
@@ -125,7 +125,7 @@ class weighted_graph : public graph {
 	DESTINATION_NAME = 1,
 	DESTINATION_WEIGHT = 2,
 	};
-	private: std::vector <weighted_vertice <weightType>> vertices;
+	private: std::vector <weighted_vertex <weightType>> vertices;
 	public: std::string nameOfVertice (
 		const unsigned int&
 	) const;

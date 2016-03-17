@@ -1,5 +1,5 @@
-#include "vertice.h"
-vertice::vertice (
+#include "vertex.h"
+vertex::vertex (
 	const std::string& name,
 	const unsigned int& nVertices
 ) {
@@ -12,24 +12,24 @@ vertice::vertice (
 		considerAnotherVertice ();
 	}
 }
-vertice::vertice (
+vertex::vertex (
 	const std::string& name
 ) {
 	m_name = name;
 }
-std::string vertice::name () const {
+std::string vertex::name () const {
 	return m_name;
 }
-bool vertice::hasEdgeTo (
+bool vertex::hasEdgeTo (
 	const unsigned int& index
 ) const {
 	return m_hasEdgeTo [index];
 }
-void vertice::addEdge (
+void vertex::addEdge (
 	const unsigned int& index
 ) {
 	m_hasEdgeTo [index] = true;
 }
-void vertice::considerAnotherVertice () {
+void vertex::considerAnotherVertice () {
 	m_hasEdgeTo.push_back (false);
 }

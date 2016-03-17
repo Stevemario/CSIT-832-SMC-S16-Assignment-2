@@ -92,7 +92,7 @@ void weighted_graph <weightType>::addVertice (
 	) {
 		vertices [verticeIndex].considerAnotherVertice ();
 	}
-	vertices.push_back (weighted_vertice <weightType> (verticeName, m_nVertices));
+	vertices.push_back (weighted_vertex <weightType> (verticeName, m_nVertices));
 	m_nVertices++;
 }
 template <class weightType>

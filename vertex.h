@@ -1,15 +1,15 @@
-#ifndef VERTICE_H
-#define VERTICE_H
+#ifndef VERTEX_H
+#define VERTEX_H
 #include <string>
 #include <vector>
-class vertice {
+class vertex {
 	private: std::string m_name;
 	protected: std::vector <bool> m_hasEdgeTo;
-	public: vertice (
+	public: vertex (
 		const std::string&,
 		const unsigned int&
 	);
-	protected: vertice (
+	protected: vertex (
 		const std::string&
 	);
 	public: std::string name () const;
@@ -22,13 +22,13 @@ class vertice {
 	public: virtual void considerAnotherVertice ();
 };
 template <class weightType>
-class weighted_vertice : public vertice {
+class weighted_vertex : public vertex {
 	private: std::vector <weightType*> m_weight;
-	public: weighted_vertice (
+	public: weighted_vertex (
 		const std::string&,
 		const unsigned int&
 	);
-	public: ~weighted_vertice ();
+	public: ~weighted_vertex ();
 	public: weightType weight (
 		const unsigned int&
 	) const;
@@ -41,5 +41,5 @@ class weighted_vertice : public vertice {
 		const weightType&
 	);
 };
-#include "vertice.tpp"
+#include "vertex.tpp"
 #endif

@@ -95,7 +95,7 @@ void non_weighted_graph::addVertice (
 	) {
 		vertices [verticeIndex].considerAnotherVertice ();
 	}
-	vertices.push_back (vertice (verticeName, m_nVertices));
+	vertices.push_back (vertex (verticeName, m_nVertices));
 	m_nVertices++;
 }
 bool non_weighted_graph::contains (

@@ -1,8 +1,8 @@
 template <class weightType>
-weighted_vertice <weightType>::weighted_vertice (
+weighted_vertex <weightType>::weighted_vertex (
 	const std::string& name,
 	const unsigned int& nVertices
-) : vertice (name) {
+) : vertex (name) {
 	for (
 		unsigned int vertice = 0;
 		vertice <= nVertices;
@@ -12,7 +12,7 @@ weighted_vertice <weightType>::weighted_vertice (
 	}
 }
 template <class weightType>
-weighted_vertice <weightType>::~weighted_vertice () {
+weighted_vertex <weightType>::~weighted_vertex () {
 	unsigned int nVertices = m_hasEdgeTo.size ();
 	for (
 		unsigned int vertice = 0;
@@ -24,25 +24,25 @@ weighted_vertice <weightType>::~weighted_vertice () {
 	}
 }
 template <class weightType>
-weightType weighted_vertice <weightType>::weight (
+weightType weighted_vertex <weightType>::weight (
 	const unsigned int& index
 ) const {
 	return *m_weight [index];
 }
 template <class weightType>
-void weighted_vertice <weightType>::addEdge (
+void weighted_vertex <weightType>::addEdge (
 	const unsigned int& index
 ) {
 	//DO NOTHING
 	//THIS IS HERE SO YOU DON'T CALL THE BASE CLASS FUNCTION
 }
 template <class weightType>
-void weighted_vertice <weightType>::considerAnotherVertice () {
+void weighted_vertex <weightType>::considerAnotherVertice () {
 	m_hasEdgeTo.push_back (false);
 	m_weight.push_back (nullptr);
 }
 template <class weightType>
-void weighted_vertice <weightType>::setWeight (
+void weighted_vertex <weightType>::setWeight (
 	const unsigned int& index,
 	const weightType& weight
 ) {
