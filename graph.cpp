@@ -129,9 +129,9 @@ void graph::addVertice (
 		verticeIndex < m_nVertices;
 		verticeIndex++
 	) {
-		list [verticeIndex].considerAnotherVertice ();
+		vertices [verticeIndex].considerAnotherVertice ();
 	}
-	list.push_back (weighted_vertice <distance> (verticeName, m_nVertices));
+	vertices.push_back (weighted_vertice <distance> (verticeName, m_nVertices));
 	m_nVertices++;
 }
 void graph::addDestinationVerticesAndEdges (
@@ -180,7 +180,7 @@ bool graph::contains (
 		contained == false && verticeIndex < m_nVertices;
 		verticeIndex++
 	) {
-		if (list [verticeIndex].name ().compare (destinationName) == 0) {
+		if (vertices [verticeIndex].name ().compare (destinationName) == 0) {
 			contained = true;
 			nDestinationGraphIndex = verticeIndex;
 		}
@@ -192,12 +192,12 @@ void graph::addEdge (
 	const unsigned int& destinationIndex,
 	const distance& weight
 ) {
-	list [departureIndex].setWeight (destinationIndex, weight);
+	vertices [departureIndex].setWeight (destinationIndex, weight);
 }
 std::string graph::nameOfVertice (
 	const unsigned int& index
 ) const {
-	return list [index].name ();
+	return vertices [index].name ();
 }
 bool graph::hasDirectConnectionBetween (
 	const unsigned int& departureIndex,
@@ -205,7 +205,7 @@ bool graph::hasDirectConnectionBetween (
 ) const {
 	bool hasDirectConnection = false;
 	if (departureIndex != destinationIndex &&
-		list [departureIndex].hasEdgeTo (destinationIndex)
+		vertices [departureIndex].hasEdgeTo (destinationIndex)
 	)
 		hasDirectConnection = true;
 	return hasDirectConnection;
@@ -261,11 +261,11 @@ void graph::findThoroughConnectionsTo (
 			if (vertice == destinationIndex) {
 				s_potentialConnection.pop_back ();
 				if (s_potentialConnection.size () > 1 &&
-					list [indexOfLastConnection].hasEdgeTo (vertice)
+					vertices [indexOfLastConnection].hasEdgeTo (vertice)
 				)
 					s_thoroughConnections.push_back (s_potentialConnection);
 			} else {
-				if (list [indexOfLastConnection].hasEdgeTo (vertice)) {
+				if (vertices [indexOfLastConnection].hasEdgeTo (vertice)) {
 				//if connection found
 					findThoroughConnectionsTo (destinationIndex); //recursive
 				} else {
@@ -302,12 +302,12 @@ void graph::sort (
 		) {
 			if (departure != nDepartures - 1)
 				weightTotal +=
-					list [throughConnections [throughConnection] [departure]].weight (
+					vertices [throughConnections [throughConnection] [departure]].weight (
 					throughConnections [throughConnection] [departure + 1]
 					);
 			else
 				weightTotal +=
-					list [throughConnections [throughConnection] [departure]].weight (
+					vertices [throughConnections [throughConnection] [departure]].weight (
 					destinationIndex
 					);
 		}

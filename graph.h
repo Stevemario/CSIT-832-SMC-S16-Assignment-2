@@ -4,7 +4,7 @@
 typedef unsigned int distance;
 typedef std::vector<unsigned int> connection;
 class graph {
-	private: std::vector <weighted_vertice <distance>> list;
+	private: std::vector <weighted_vertice <distance>> vertices;
 	private: unsigned int m_nVertices;
 	private: static std::vector <connection> s_thoroughConnections;
 	private: static connection s_potentialConnection;
