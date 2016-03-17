@@ -46,20 +46,68 @@ bool graph::hasDirectConnectionBetween (
 bool graph::hasThroughConnectionBetween (
 	const unsigned int& departureIndex,
 	const unsigned int& destinationIndex,
-	std::vector<connection>& throughConnections,
-	std::vector<distance>& weightTotals
+	std::vector<connection>& throughConnections
 ) const {
 	connection potentialConnection;
 	bool hasThroughConnection = false;
 	if (departureIndex != destinationIndex) {
 		potentialConnection.push_back (departureIndex);
 		findThoroughConnectionsTo (destinationIndex, throughConnections, potentialConnection);
-		if (throughConnections.empty () == false) {
+		if (throughConnections.empty () == false)
 			hasThroughConnection = true;
-			sort (throughConnections, weightTotals, destinationIndex);
-		}
 	}
 	return hasThroughConnection;
+}
+void graph::sort (
+	std::vector<connection>& throughConnections,
+	std::vector<distance>& weightTotals,
+	const unsigned int& destinationIndex
+) const {
+	unsigned int throughConnection;
+	unsigned int nThroughConnections = throughConnections.size ();
+	distance weightTotal;
+	unsigned int nDepartures;
+	unsigned int departure;
+	unsigned int successorConnection;
+	for (
+		throughConnection = 0;
+		throughConnection < nThroughConnections;
+		throughConnection++
+	) {
+		weightTotal = 0;
+		nDepartures = throughConnections [throughConnection].size ();
+		for (
+			departure = 0;
+			departure < nDepartures;
+			departure++
+		) {
+			if (departure != nDepartures - 1)
+				weightTotal +=
+					vertices [throughConnections [throughConnection] [departure]].weight (
+					throughConnections [throughConnection] [departure + 1]
+					);
+			else
+				weightTotal +=
+					vertices [throughConnections [throughConnection] [departure]].weight (
+					destinationIndex
+					);
+		}
+		weightTotals.push_back (weightTotal);
+	}
+	for (
+		throughConnection = 0;
+		throughConnection < nThroughConnections;
+		throughConnection++
+	) {
+		for (
+			successorConnection = throughConnection + 1;
+			successorConnection < nThroughConnections;
+			successorConnection++
+		) {
+			if (weightTotals [successorConnection] < weightTotals [throughConnection])
+				swap (throughConnections, weightTotals, throughConnection, successorConnection);
+		}
+	}
 }
 void graph::parseFile (
 	std::ifstream& dataFile,
@@ -278,57 +326,6 @@ void graph::findThoroughConnectionsTo (
 		}
 	}
 	potentialConnection.pop_back ();
-}
-void graph::sort (
-	std::vector<connection>& throughConnections,
-	std::vector<distance>& weightTotals,
-	const unsigned int& destinationIndex
-) const {
-	unsigned int throughConnection;
-	unsigned int nThroughConnections = throughConnections.size ();
-	distance weightTotal;
-	unsigned int nDepartures;
-	unsigned int departure;
-	unsigned int successorConnection;
-	for (
-		throughConnection = 0;
-		throughConnection < nThroughConnections;
-		throughConnection++
-	) {
-		weightTotal = 0;
-		nDepartures = throughConnections [throughConnection].size ();
-		for (
-			departure = 0;
-			departure < nDepartures;
-			departure++
-		) {
-			if (departure != nDepartures - 1)
-				weightTotal +=
-					vertices [throughConnections [throughConnection] [departure]].weight (
-					throughConnections [throughConnection] [departure + 1]
-					);
-			else
-				weightTotal +=
-					vertices [throughConnections [throughConnection] [departure]].weight (
-					destinationIndex
-					);
-		}
-		weightTotals.push_back (weightTotal);
-	}
-	for (
-		throughConnection = 0;
-		throughConnection < nThroughConnections;
-		throughConnection++
-	) {
-		for (
-			successorConnection = throughConnection + 1;
-			successorConnection < nThroughConnections;
-			successorConnection++
-		) {
-			if (weightTotals [successorConnection] < weightTotals [throughConnection])
-				swap (throughConnections, weightTotals, throughConnection, successorConnection);
-		}
-	}
 }
 void graph::swap (
 	std::vector<connection>& throughConnections,

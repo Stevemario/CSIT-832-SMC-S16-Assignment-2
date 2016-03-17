@@ -25,8 +25,12 @@ class graph {
 	public: bool hasThroughConnectionBetween (
 		const unsigned int&,
 		const unsigned int&,
+		std::vector <connection>&
+	) const;
+	public: void sort (
 		std::vector <connection>&,
-		std::vector <distance>&
+		std::vector <distance>&,
+		const unsigned int&
 	) const;
 	private: static void parseFile (
 		std::ifstream&,
@@ -63,11 +67,6 @@ class graph {
 		const unsigned int&,
 		std::vector <connection>&,
 		connection&
-	) const;
-	private: void sort (
-		std::vector <connection>&,
-		std::vector <distance>&,
-		const unsigned int&
 	) const;
 	private: static void swap (
 		std::vector <connection>&,
