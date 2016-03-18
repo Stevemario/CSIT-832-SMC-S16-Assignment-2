@@ -30,7 +30,8 @@ class graph {
 		std::vector <connection>&
 	) const = 0;
 	public: virtual void addVertices (
-		const std::vector <std::string>&
+		const std::vector <std::string>&,
+		std::vector <unsigned int>&
 	) = 0;
 	public: virtual void addVertice (
 		const std::string&
@@ -74,7 +75,8 @@ class non_weighted_graph : public graph {
 		std::vector <connection>&
 	) const;
 	private: void addVertices (
-		const std::vector <std::string>&
+		const std::vector <std::string>&,
+		std::vector <unsigned int>&
 	);
 	private: void addVertice (
 		const std::string&
@@ -96,6 +98,7 @@ class non_weighted_graph : public graph {
 	);
 	private: void addDestinationVerticesAndEdges (
 		const std::vector <std::string>&,
+		const std::vector <unsigned int>&,
 		const std::vector <unsigned int>&
 	);
 	private: void addEdge (
@@ -154,7 +157,8 @@ class weighted_graph : public graph {
 		std::vector <connection>&
 	) const;
 	private: void addVertices (
-		const std::vector <std::string>&
+		const std::vector <std::string>&,
+		std::vector <unsigned int>&
 	);
 	private: void addVertice (
 		const std::string&
@@ -183,6 +187,7 @@ class weighted_graph : public graph {
 	private: void addDestinationVerticesAndEdges (
 		const std::vector <std::string>&,
 		const std::vector <weightType>&,
+		const std::vector <unsigned int>&,
 		const std::vector <unsigned int>&
 	);
 	private: void addEdge (

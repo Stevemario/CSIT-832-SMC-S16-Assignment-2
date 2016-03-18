@@ -26,6 +26,7 @@ void weighted_graph <weightType>::load (
 	std::vector <std::string> destinationVerticesNames;
 	std::vector <weightType> destinationVerticesWeights;
 	std::vector <unsigned int> destinationVerticesAmounts;
+	std::vector <unsigned int> departureVerticesIndexes;
 	parseFile (
 		dataFile,
 		departureVerticesNames,
@@ -33,11 +34,12 @@ void weighted_graph <weightType>::load (
 		destinationVerticesWeights,
 		destinationVerticesAmounts
 	);
-	addVertices (departureVerticesNames);
+	addVertices (departureVerticesNames, departureVerticesIndexes);
 	addDestinationVerticesAndEdges (
 		destinationVerticesNames,
 		destinationVerticesWeights,
-		destinationVerticesAmounts
+		destinationVerticesAmounts,
+		departureVerticesIndexes
 	);
 }
 template <class weightType>
@@ -70,15 +72,23 @@ bool weighted_graph <weightType>::hasThroughConnectionBetween (
 }
 template <class weightType>
 void weighted_graph <weightType>::addVertices (
-	const std::vector <std::string>& verticesNames
+	const std::vector <std::string>& verticesNames,
+	std::vector <unsigned int>& departureVerticesIndexes
 ) {
 	unsigned int nVertices = verticesNames.size ();
+	std::string vertexName;
+	unsigned int departureVertexIndex;
 	for (
 		unsigned int nVertice = 0;
 		nVertice < nVertices;
 		nVertice++
 	) {
-		addVertice (verticesNames [nVertice]);
+		vertexName = verticesNames [nVertice];
+		if (this->contains (vertexName, departureVertexIndex) == false) {
+			addVertice (vertexName);
+			departureVertexIndex = nVertice;
+		}
+		departureVerticesIndexes.push_back (departureVertexIndex);
 	}
 }
 template <class weightType>
@@ -292,35 +302,39 @@ template <class weightType>
 void weighted_graph <weightType>::addDestinationVerticesAndEdges (
 	const std::vector <std::string>& destinationVerticesNames,
 	const std::vector <weightType>& destinationVerticesWeights,
-	const std::vector <unsigned int>& destinationVerticesAmounts
+	const std::vector <unsigned int>& destinationVerticesAmounts,
+	const std::vector <unsigned int>& departureVerticesIndexes
 ) {
-	unsigned int nDepartureVertice;
-	const unsigned int nDepartureVertices = m_nVertices;
-	unsigned int destinationVerticesAmount;
-	unsigned int nDestinationVertice;
+	unsigned int departure;
+	const unsigned int nDepartures = destinationVerticesAmounts.size ();
+	unsigned int nDestinations;
+	unsigned int destination;
 	std::string destinationName;
 	unsigned int nDestinationParametersIndex = 0;
 	unsigned int nDestinationGraphIndex;
 	for (
-		nDepartureVertice = 0;
-		nDepartureVertice < nDepartureVertices;
-		nDepartureVertice++
+		departure = 0;
+		departure < nDepartures;
+		departure++
 	) {
-	//for every departure vertice
-		destinationVerticesAmount = destinationVerticesAmounts [nDepartureVertice]; //don't change
+	//for every departure
+		nDestinations = destinationVerticesAmounts [departure]; //don't change
 		for (
-			nDestinationVertice = 0;
-			nDestinationVertice < destinationVerticesAmount;
-			nDestinationVertice++
+			destination = 0;
+			destination < nDestinations;
+			destination++
 		) {
 		//for every destination
 			destinationName = destinationVerticesNames [nDestinationParametersIndex];
-			if (this->contains (destinationName, nDestinationGraphIndex))
-				addEdge (nDepartureVertice, nDestinationGraphIndex, destinationVerticesWeights [nDestinationParametersIndex]);
-			else {
+			if (this->contains (destinationName, nDestinationGraphIndex) == false) {
 				addVertice (destinationName);
-				addEdge (nDepartureVertice, m_nVertices - 1, destinationVerticesWeights [nDestinationParametersIndex]);
+				nDestinationGraphIndex =  m_nVertices - 1;
 			}
+			addEdge (
+				departureVerticesIndexes [departure],
+				nDestinationGraphIndex,
+				destinationVerticesWeights [nDestinationParametersIndex]
+			);
 			nDestinationParametersIndex++;
 		}
 	}
