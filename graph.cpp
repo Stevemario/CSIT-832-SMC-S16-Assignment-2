@@ -90,7 +90,7 @@ void non_weighted_graph::addVertices (
 		vertexName = verticesNames [nVertice];
 		if (this->contains (vertexName, departureVertexIndex) == false) {
 			addVertice (vertexName);
-			departureVertexIndex = nVertice;
+			departureVertexIndex = m_nVertices - 1;
 		}
 		departureVerticesIndexes.push_back (departureVertexIndex);
 	}
@@ -249,6 +249,7 @@ void non_weighted_graph::addDestinationVerticesAndEdges (
 	std::string destinationName;
 	unsigned int nDestinationParametersIndex = 0;
 	unsigned int nDestinationGraphIndex;
+	unsigned int nDepartureGraphIndex;
 	for (
 		departure = 0;
 		departure < nDepartures;
@@ -267,8 +268,9 @@ void non_weighted_graph::addDestinationVerticesAndEdges (
 				addVertice (destinationName);
 				nDestinationGraphIndex = m_nVertices - 1;
 			}
+			nDepartureGraphIndex = departureVerticesIndexes [departure];
 			addEdge (
-				departureVerticesIndexes [departure],
+				nDepartureGraphIndex,
 				nDestinationGraphIndex
 			);
 			nDestinationParametersIndex++;
