@@ -1,7 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 #include "vertex.h"
-typedef std::vector <unsigned int> connection;
+#include "connection.h"
 bool canReadALineInto (
 	std::string&,
 	std::ifstream&
@@ -24,11 +24,6 @@ class graph {
 		const unsigned int&,
 		const unsigned int&
 	) const = 0;
-	public: virtual bool hasThroughConnectionBetween (
-		const unsigned int&,
-		const unsigned int&,
-		std::vector <connection>&
-	) const = 0;
 	public: virtual void addVertices (
 		const std::vector <std::string>&,
 		std::vector <unsigned int>&
@@ -39,11 +34,6 @@ class graph {
 	public: virtual bool contains (
 		const std::string&,
 		unsigned int&
-	) const = 0;
-	public: virtual void findThroughConnectionsTo (
-		const unsigned int&,
-		std::vector <connection>&,
-		connection&
 	) const = 0;
 };
 class non_weighted_graph : public graph {
@@ -154,7 +144,7 @@ class weighted_graph : public graph {
 	public: bool hasThroughConnectionBetween (
 		const unsigned int&,
 		const unsigned int&,
-		std::vector <connection>&
+		std::vector <weighted_connection <weightType>>&
 	) const;
 	private: void addVertices (
 		const std::vector <std::string>&,
@@ -169,13 +159,15 @@ class weighted_graph : public graph {
 	) const;
 	private: void findThroughConnectionsTo (
 		const unsigned int&,
-		std::vector <connection>&,
-		connection&
+		std::vector <weighted_connection <weightType>>&,
+		weighted_connection <weightType>&
+	) const;
+	public: void calculateWeightSums (
+			std::vector <weighted_connection <weightType>>&,
+			const unsigned int&
 	) const;
 	public: void sort (
-		std::vector <connection>&,
-		std::vector <weightType>&,
-		const unsigned int&
+		std::vector <weighted_connection <weightType>>&
 	) const;
 	private: static void parseFile (
 		std::ifstream&,
@@ -196,8 +188,7 @@ class weighted_graph : public graph {
 		const weightType&
 	);
 	private: static void swap (
-		std::vector <connection>&,
-		std::vector <weightType>&,
+		std::vector <weighted_connection <weightType>>&,
 		const unsigned int&,
 		const unsigned int&
 	);

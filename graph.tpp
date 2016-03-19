@@ -58,12 +58,12 @@ template <class weightType>
 bool weighted_graph <weightType>::hasThroughConnectionBetween (
 	const unsigned int& departureIndex,
 	const unsigned int& destinationIndex,
-	std::vector<connection>& throughConnections
+	std::vector <weighted_connection <weightType>>& throughConnections
 ) const {
-	connection potentialConnection;
+	weighted_connection <weightType> potentialConnection;
 	bool hasThroughConnection = false;
 	if (departureIndex != destinationIndex) {
-		potentialConnection.push_back (departureIndex);
+		potentialConnection.addDeparture (departureIndex);
 		findThroughConnectionsTo (destinationIndex, throughConnections, potentialConnection);
 		if (throughConnections.empty () == false)
 			hasThroughConnection = true;
@@ -126,12 +126,12 @@ bool weighted_graph <weightType>::contains (
 template <class weightType>
 void weighted_graph <weightType>::findThroughConnectionsTo (
 	const unsigned int& destinationIndex,
-	std::vector <connection>& throughConnections,
-	connection& potentialConnection
+	std::vector <weighted_connection <weightType>>& throughConnections,
+	weighted_connection <weightType>& potentialConnection
 ) const {
 	unsigned int vertice;
-	unsigned int nConnection;
-	unsigned int nConnections;
+	unsigned int departure;
+	unsigned int nDepartures;
 	unsigned int indexOfLastConnection;
 	bool goingSomewhereTwice;
 	for (
@@ -140,43 +140,44 @@ void weighted_graph <weightType>::findThroughConnectionsTo (
 		vertice++
 	) {
 	//for every vertice
-		nConnections = potentialConnection.size ();
+		nDepartures = potentialConnection.nDepartures ();
 		goingSomewhereTwice = false;
 		for (
-			nConnection = 0;
-			nConnection < nConnections;
-			nConnection++
+			departure = 0;
+			departure < nDepartures;
+			departure++
 		) {
-			indexOfLastConnection = potentialConnection[nConnection];
+			indexOfLastConnection = potentialConnection.indexOfDeparture (departure);
 			if (vertice == indexOfLastConnection)
 			//because of loop this tells us if the vertice is ANY connection
 				goingSomewhereTwice = true;
 		}
 		if (goingSomewhereTwice == false) {
-			potentialConnection.push_back (vertice);
+			potentialConnection.addDeparture (vertice);
 			if (vertice == destinationIndex) {
-				potentialConnection.pop_back ();
-				if (potentialConnection.size () > 1 &&
+				potentialConnection.removeLastDeparture ();
+				if (potentialConnection.nDepartures () > 1 &&
 					this->hasEdge (indexOfLastConnection, vertice)
-				)
+				) {
 					throughConnections.push_back (potentialConnection);
+					potentialConnection = weighted_connection <weightType> (potentialConnection);
+				}
 			} else {
 				if (this->hasEdge (indexOfLastConnection, vertice)) {
 				//if connection found
 					findThroughConnectionsTo (destinationIndex, throughConnections, potentialConnection); //recursive
 				} else {
 				//if connection not found
-					potentialConnection.pop_back ();
+					potentialConnection.removeLastDeparture ();
 				}
 			}
 		}
 	}
-	potentialConnection.pop_back ();
+	potentialConnection.removeLastDeparture ();
 }
 template <class weightType>
-void weighted_graph <weightType>::sort (
-	std::vector<connection>& throughConnections,
-	std::vector<weightType>& weightTotals,
+void weighted_graph <weightType>::calculateWeightSums (
+	std::vector <weighted_connection <weightType>>& throughConnections,
 	const unsigned int& destinationIndex
 ) const {
 	unsigned int throughConnection;
@@ -185,30 +186,37 @@ void weighted_graph <weightType>::sort (
 	unsigned int nDepartures;
 	unsigned int departure;
 	unsigned int currentDestination;
-	unsigned int successorConnection;
 	for (
 		throughConnection = 0;
 		throughConnection < nThroughConnections;
 		throughConnection++
 	) {
 		setEmpty (weightTotal);
-		nDepartures = throughConnections [throughConnection].size ();
+		nDepartures = throughConnections [throughConnection].nDepartures ();
 		for (
 			departure = 0;
 			departure < nDepartures;
 			departure++
 		) {
 			if (departure != nDepartures - 1)
-				currentDestination = throughConnections [throughConnection] [departure + 1];
+				currentDestination = throughConnections [throughConnection].indexOfDeparture (departure + 1);
 			else
 				currentDestination = destinationIndex;
 			weightTotal += weight (
-				throughConnections [throughConnection] [departure],
+				throughConnections [throughConnection].indexOfDeparture (departure),
 				currentDestination
 			);
 		}
-		weightTotals.push_back (weightTotal);
+		throughConnections [throughConnection].set_weightsSum (weightTotal);
 	}
+}
+template <class weightType>
+void weighted_graph <weightType>::sort (
+	std::vector <weighted_connection <weightType>>& throughConnections
+) const {
+	unsigned int throughConnection;
+	unsigned int nThroughConnections = throughConnections.size ();
+	unsigned int successorConnection;
 	for (
 		throughConnection = 0;
 		throughConnection < nThroughConnections;
@@ -219,8 +227,8 @@ void weighted_graph <weightType>::sort (
 			successorConnection < nThroughConnections;
 			successorConnection++
 		) {
-			if (weightTotals [successorConnection] < weightTotals [throughConnection])
-				swap (throughConnections, weightTotals, throughConnection, successorConnection);
+			if (throughConnections [successorConnection].weightsSum () < throughConnections [throughConnection].weightsSum ())
+				swap (throughConnections, throughConnection, successorConnection);
 		}
 	}
 }
@@ -349,15 +357,11 @@ void weighted_graph <weightType>::addEdge (
 }
 template <class weightType>
 void weighted_graph <weightType>::swap (
-	std::vector<connection>& throughConnections,
-	std::vector<weightType>& weightTotals,
+	std::vector<weighted_connection <weightType>>& throughConnections,
 	const unsigned int& index1,
 	const unsigned int& index2
 ) {
-		connection tempConnection = throughConnections [index1];
-		weightType tempWeightTotal = weightTotals [index1];
+		weighted_connection <weightType> tempConnection = throughConnections [index1];
 		throughConnections [index1] = throughConnections [index2];
-		weightTotals [index1] = weightTotals [index2];
 		throughConnections [index2] = tempConnection;
-		weightTotals [index2] = tempWeightTotal;
 }

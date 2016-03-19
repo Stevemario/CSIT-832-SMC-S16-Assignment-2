@@ -63,12 +63,12 @@ bool non_weighted_graph::hasDirectConnectionBetween (
 bool non_weighted_graph::hasThroughConnectionBetween (
 	const unsigned int& departureIndex,
 	const unsigned int& destinationIndex,
-	std::vector<connection>& throughConnections
+	std::vector <connection>& throughConnections
 ) const {
 	connection potentialConnection;
 	bool hasThroughConnection = false;
 	if (departureIndex != destinationIndex) {
-		potentialConnection.push_back (departureIndex);
+		potentialConnection.addDeparture (departureIndex);
 		findThroughConnectionsTo (destinationIndex, throughConnections, potentialConnection);
 		if (throughConnections.empty () == false)
 			hasThroughConnection = true;
@@ -131,8 +131,8 @@ void non_weighted_graph::findThroughConnectionsTo (
 	connection& potentialConnection
 ) const {
 	unsigned int vertice;
-	unsigned int nConnection;
-	unsigned int nConnections;
+	unsigned int departure;
+	unsigned int nDepartures;
 	unsigned int indexOfLastConnection;
 	bool goingSomewhereTwice;
 	for (
@@ -141,38 +141,40 @@ void non_weighted_graph::findThroughConnectionsTo (
 		vertice++
 	) {
 	//for every vertice
-		nConnections = potentialConnection.size ();
+		nDepartures = potentialConnection.nDepartures ();
 		goingSomewhereTwice = false;
 		for (
-			nConnection = 0;
-			nConnection < nConnections;
-			nConnection++
+			departure = 0;
+			departure < nDepartures;
+			departure++
 		) {
-			indexOfLastConnection = potentialConnection[nConnection];
+			indexOfLastConnection = potentialConnection.indexOfDeparture (departure);
 			if (vertice == indexOfLastConnection)
 			//because of loop this tells us if the vertice is ANY connection
 				goingSomewhereTwice = true;
 		}
 		if (goingSomewhereTwice == false) {
-			potentialConnection.push_back (vertice);
+			potentialConnection.addDeparture (vertice);
 			if (vertice == destinationIndex) {
-				potentialConnection.pop_back ();
-				if (potentialConnection.size () > 1 &&
+				potentialConnection.removeLastDeparture ();
+				if (potentialConnection.nDepartures () > 1 &&
 					this->hasEdge (indexOfLastConnection, vertice)
-				)
+				) {
 					throughConnections.push_back (potentialConnection);
+					potentialConnection = connection (potentialConnection);
+				}
 			} else {
 				if (this->hasEdge (indexOfLastConnection, vertice)) {
 				//if connection found
 					findThroughConnectionsTo (destinationIndex, throughConnections, potentialConnection); //recursive
 				} else {
 				//if connection not found
-					potentialConnection.pop_back ();
+					potentialConnection.removeLastDeparture ();
 				}
 			}
 		}
 	}
-	potentialConnection.pop_back ();
+	potentialConnection.removeLastDeparture ();
 }
 void non_weighted_graph::parseFile (
 	std::ifstream& dataFile,
