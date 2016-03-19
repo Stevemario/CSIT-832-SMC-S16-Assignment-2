@@ -38,8 +38,8 @@ class graph {
 };
 class non_weighted_graph : public graph {
 	enum class string_destinations {
-	DEPARTURE_NAME = 0,
-	DESTINATION_NAME = 1,
+		DEPARTURE_NAME = 0,
+		DESTINATION_NAME = 1,
 	};
 	private: std::vector <vertex> vertices;
 	public: std::string nameOfVertice (
@@ -114,9 +114,9 @@ template <class weightType>
 //SO YOU MUST HAVE THEM!
 class weighted_graph : public graph {
 	enum class string_destinations {
-	DEPARTURE_NAME = 0,
-	DESTINATION_NAME = 1,
-	DESTINATION_WEIGHT = 2,
+		DEPARTURE_NAME = 0,
+		DESTINATION_NAME = 1,
+		DESTINATION_WEIGHT = 2,
 	};
 	private: std::vector <weighted_vertex <weightType>> vertices;
 	public: std::string nameOfVertice (
