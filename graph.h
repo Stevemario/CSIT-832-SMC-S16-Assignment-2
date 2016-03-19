@@ -166,9 +166,6 @@ class weighted_graph : public graph {
 			std::vector <weighted_connection <weightType>>&,
 			const unsigned int&
 	) const;
-	public: void sort (
-		std::vector <weighted_connection <weightType>>&
-	) const;
 	private: static void parseFile (
 		std::ifstream&,
 		std::vector <std::string>&,
@@ -186,11 +183,6 @@ class weighted_graph : public graph {
 		const unsigned int&,
 		const unsigned int&,
 		const weightType&
-	);
-	private: static void swap (
-		std::vector <weighted_connection <weightType>>&,
-		const unsigned int&,
-		const unsigned int&
 	);
 };
 #include "graph.tpp"

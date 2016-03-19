@@ -6,6 +6,7 @@
 //This software uses a graph to represent the GenghisAir flight cities network.
 #include "graph.h"
 #include "distance.h"
+#include "priorityqueue.h"
 #include <iostream>
 #include <fstream>
 typedef weighted_graph <distance> graph_weighted_by_distance;
@@ -177,20 +178,23 @@ void printThroughConnections (
 	const unsigned int& destinationCityIndex,
 	std::vector <connection_weighted_by_distance>& throughConnections
 ) {
-	unsigned int nConnections;
-	unsigned int connection;
+	unsigned int nConnections = throughConnections.size ();
+	PriorityQueue <connection_weighted_by_distance> throughConnectionPrioQ;
+	connection_weighted_by_distance currentConnection;
 	unsigned int nDepartures;
 	unsigned int departure;
 	std::string weightTotal;
 	citiesGraph.calculateWeightSums (throughConnections, destinationCityIndex);
-	citiesGraph.sort (throughConnections);
-	nConnections = throughConnections.size ();
 	for (
-		connection = 0;
+		unsigned int connection = 0;
 		connection < nConnections;
 		connection++
 	) {
-		nDepartures = throughConnections [connection].nDepartures ();
+		throughConnectionPrioQ.enqueue (throughConnections [connection]);
+	}
+	while (throughConnectionPrioQ.bIsEmpty () == false) {
+		throughConnectionPrioQ.dequeue (currentConnection);
+		nDepartures = currentConnection.nDepartures ();
 		std::cout << "Through connection between " << citiesGraph.nameOfVertice (departureCityIndex) << " and " <<
 			citiesGraph.nameOfVertice (destinationCityIndex)  << " via ";
 		for (
@@ -198,7 +202,7 @@ void printThroughConnections (
 			departure < nDepartures;
 			departure++
 		) {
-			std::cout << citiesGraph.nameOfVertice (throughConnections [connection].indexOfDeparture (departure));
+			std::cout << citiesGraph.nameOfVertice (currentConnection.indexOfDeparture (departure));
 			if (
 				nDepartures > 1 &&
 				//there are multiple layovers, and
@@ -211,7 +215,7 @@ void printThroughConnections (
 					std::cout << "and ";
 			}
 		}
-		getWeight (weightTotal, throughConnections [connection].weightsSum ());
+		getWeight (weightTotal, currentConnection.weightsSum ());
 		std::cout << " - " << weightTotal << " miles\n";
 	}
 }

@@ -18,6 +18,9 @@ class weighted_connection : public connection {
 	private: weightType m_weightsSum;
 	public: weightType weightsSum () const;
 	public: void set_weightsSum (weightType);
+	public: bool operator< (
+		const weighted_connection <weightType>&
+	) const;
 };
 #include "connection.tpp"
 #endif

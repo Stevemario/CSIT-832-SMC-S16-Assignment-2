@@ -211,28 +211,6 @@ void weighted_graph <weightType>::calculateWeightSums (
 	}
 }
 template <class weightType>
-void weighted_graph <weightType>::sort (
-	std::vector <weighted_connection <weightType>>& throughConnections
-) const {
-	unsigned int throughConnection;
-	unsigned int nThroughConnections = throughConnections.size ();
-	unsigned int successorConnection;
-	for (
-		throughConnection = 0;
-		throughConnection < nThroughConnections;
-		throughConnection++
-	) {
-		for (
-			successorConnection = throughConnection + 1;
-			successorConnection < nThroughConnections;
-			successorConnection++
-		) {
-			if (throughConnections [successorConnection].weightsSum () < throughConnections [throughConnection].weightsSum ())
-				swap (throughConnections, throughConnection, successorConnection);
-		}
-	}
-}
-template <class weightType>
 void weighted_graph <weightType>::parseFile (
 	std::ifstream& dataFile,
 	std::vector <std::string>& departureVerticesNames,
@@ -354,14 +332,4 @@ void weighted_graph <weightType>::addEdge (
 	const weightType& weight
 ) {
 	vertices [departureIndex].setWeight (destinationIndex, weight);
-}
-template <class weightType>
-void weighted_graph <weightType>::swap (
-	std::vector<weighted_connection <weightType>>& throughConnections,
-	const unsigned int& index1,
-	const unsigned int& index2
-) {
-		weighted_connection <weightType> tempConnection = throughConnections [index1];
-		throughConnections [index1] = throughConnections [index2];
-		throughConnections [index2] = tempConnection;
 }
