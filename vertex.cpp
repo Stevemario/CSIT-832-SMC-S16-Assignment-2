@@ -33,3 +33,6 @@ void vertex::addEdge (
 void vertex::considerAnotherVertice () {
 	m_hasEdgeTo.push_back (false);
 }
+unsigned int vertex::nVerticesConsidered () const {
+	return m_hasEdgeTo.size ();
+}

@@ -20,6 +20,7 @@ class vertex {
 		const unsigned int&
 	);
 	public: virtual void considerAnotherVertice ();
+	public: unsigned int nVerticesConsidered () const;
 };
 template <class weightType>
 class weighted_vertex : public vertex {
@@ -27,6 +28,9 @@ class weighted_vertex : public vertex {
 	public: weighted_vertex (
 		const std::string&,
 		const unsigned int&
+	);
+	public: weighted_vertex (
+		const weighted_vertex <weightType>&
 	);
 	public: ~weighted_vertex ();
 	public: weightType weight (

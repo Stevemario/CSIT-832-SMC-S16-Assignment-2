@@ -12,6 +12,23 @@ weighted_vertex <weightType>::weighted_vertex (
 	}
 }
 template <class weightType>
+weighted_vertex <weightType>::weighted_vertex (
+	const weighted_vertex <weightType>& source
+) : vertex (source.name ()) {
+	unsigned int nVerticesConsidered = source.nVerticesConsidered ();
+	for (
+		unsigned int vertexIndex = 0;
+		vertexIndex < nVerticesConsidered;
+		vertexIndex++
+	) {
+		considerAnotherVertice ();
+		if (source.hasEdgeTo (vertexIndex)) {
+			m_hasEdgeTo [vertexIndex] = true;
+			m_weight [vertexIndex] = new weightType (source.weight (vertexIndex));
+		}
+	}
+}
+template <class weightType>
 weighted_vertex <weightType>::~weighted_vertex () {
 	unsigned int nVertices = m_hasEdgeTo.size ();
 	for (
